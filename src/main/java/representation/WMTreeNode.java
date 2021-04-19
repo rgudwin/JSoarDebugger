@@ -92,7 +92,9 @@ public class WMTreeNode extends DefaultMutableTreeNode {
             } 
     }
     
+    int recursion = 0;
     public WMTreeNode addIdentifier(WMNode node) {
+        recursion++;
         WMTreeNode idNode = getIdNode(node);
         for (WMNode n : node.getL()) {
             if (n.isType(0) || n.isType(2)) { // n is an identifier
@@ -122,15 +124,17 @@ public class WMTreeNode extends DefaultMutableTreeNode {
         WMTreeNode root = addRootNode("Root");
         repr = new CopyOnWriteArrayList<WMNode>();
         for (WMNode wm : lwm) {
+            recursion=0;
             WMTreeNode child = root.addIdentifier(wm);
+            System.out.println(recursion);
             ExpandStateLibrary.set(child,true);
-        }    
-//        for (WMNode ii : wo) {
-//            state.add(ii);
-//            WMTreeNode o = addIdentifier(state);
-//            root.add(o);
-//            ExpandStateLibrary.set(o,true);
-//        }
+        }
+        
+        Runtime.getRuntime().gc();
+        System.out.println("ExpandState: "+ExpandStateLibrary.size());
+        System.out.println("Free memory (MB): " + (Runtime.getRuntime().freeMemory()/1024)/1024);
+        System.out.println("Total memory (MB): " + (Runtime.getRuntime().totalMemory()/1024)/1024);
+        System.out.println("Maximum memory (MB): " + (Runtime.getRuntime().maxMemory()/1024)/1024);
         return root;
     }
     
@@ -139,7 +143,6 @@ public class WMTreeNode extends DefaultMutableTreeNode {
         ExpandStateLibrary.set(root,true);
         for (WMNode wm : lwm) {
             WMTreeNode child = root.addWMNode(wm);
-            System.out.println(wm.getName()+wm.getValue().toString());
             ExpandStateLibrary.set(child,true);
         }
         return root;

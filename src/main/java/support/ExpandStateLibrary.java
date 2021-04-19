@@ -6,6 +6,8 @@
 package support;
 
 import java.util.HashMap;
+import java.util.Map;
+import org.jsoar.kernel.symbols.Identifier;
 import representation.WMTreeNode;
 
 /**
@@ -80,6 +82,20 @@ public class ExpandStateLibrary {
         String attribute = ((TreeElement)node.getUserObject()).getName();
         String value = ((TreeElement)node.getUserObject()).getValue();
         set(identifier,attribute,value,expandstate);
+    }
+    
+    public static int size() {
+        return repository.size();
+    }
+    
+    public static String dump() {
+        String s = "";
+        for (Map.Entry<String,Boolean> e : repository.entrySet()) {
+                String ss = e.getKey();
+                Boolean exp = e.getValue();
+                s += ss+" "+exp+"\n";
+        }
+        return s;        
     }
     
 }

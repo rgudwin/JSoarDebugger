@@ -12,8 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -151,6 +153,16 @@ public class WMPanel extends javax.swing.JPanel {
         if (editable) jtree.addMouseListener(ml);
     }
     
+    public WMNode getRoot() {
+        return(root);
+    }
+    
+    public void restartPanel(WMNode root, SoarEngine sb) {
+        this.root = root;
+        this.sb = sb;
+        updateTree();
+    }
+    
     public void addListener(WmeEditorListener listener) {
         listeners.add(listener);
     }
@@ -164,6 +176,9 @@ public class WMPanel extends javax.swing.JPanel {
     private void createIdentifier(WMTreeNode parent) {
         TreeElement.reset();
         WMTreeNode newao = DialogFactory.getIdentifier(parent,sb);
+        WMNode wmparent = (WMNode)parent.getTreeElement().getElement();
+        WMNode wmtobeadded = (WMNode) newao.getTreeElement().getElement();
+        wmparent.add(wmtobeadded);
         //newao.getTreeElement().setExpand(true);
         //System.out.println("inputLink "+sb.inputLink);
         parent.add(newao);
@@ -176,6 +191,9 @@ public class WMPanel extends javax.swing.JPanel {
     private void createValue(WMTreeNode parent) {
         TreeElement.reset();
         WMTreeNode newao = DialogFactory.getValue(parent,sb);
+        WMNode wmparent = (WMNode)parent.getTreeElement().getElement();
+        WMNode wmtobeadded = (WMNode) newao.getTreeElement().getElement();
+        wmparent.add(wmtobeadded);
         //newao.getTreeElement().setExpand(true);
         //System.out.println("inputLink "+sb.inputLink);
         parent.add(newao);
@@ -310,8 +328,26 @@ public class WMPanel extends javax.swing.JPanel {
         }    
         return(value);    
     }
+
+    public void save() {
+        String filename = "";
+        try {JFileChooser chooser = new JFileChooser();
+             if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                  filename = chooser.getSelectedFile().getCanonicalPath();
+             }
+             if (!filename.equals("")) {
+                File logFile = new File(filename);
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+                String s = this.buildFromWMTreeNode(rootlink);
+                writer.write(s);                
+                writer.close();
+                //System.out.println("Wrote to "+filename);
+                //System.out.println(s);
+             }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
     
-    private WMNode load() {
+    public WMNode load() {
         //boolean result = false;
         String line;
         String filename = "";
@@ -356,6 +392,7 @@ public class WMPanel extends javax.swing.JPanel {
                 reader.close();
              }
         } catch (Exception e) { e.printStackTrace(); }
+        root = newAO;
         return(newAO);
     }
     
@@ -531,7 +568,6 @@ public class WMPanel extends javax.swing.JPanel {
     
     public void updateTree2() {
        rootlink = rootlink.restartInputLinkNode(root.getL());
-       System.out.println(root.toStringFull());
        TreeModel tm = new DefaultTreeModel(rootlink);
        ExpandStateLibrary.set(rootlink, true);
        jtree.setModel(tm);
@@ -586,6 +622,14 @@ public class WMPanel extends javax.swing.JPanel {
 
         jtree.setMaximumSize(new java.awt.Dimension(83, 200));
         jtree.setMinimumSize(new java.awt.Dimension(0, 200));
+        jtree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                jtreeTreeExpanded(evt);
+            }
+            public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
+                jtreeTreeCollapsed(evt);
+            }
+        });
         jsp.setViewportView(jtree);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -599,6 +643,14 @@ public class WMPanel extends javax.swing.JPanel {
             .addComponent(jsp, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jtreeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jtreeTreeCollapsed
+        collapse(evt);
+    }//GEN-LAST:event_jtreeTreeCollapsed
+
+    private void jtreeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jtreeTreeExpanded
+        expanded(evt);
+    }//GEN-LAST:event_jtreeTreeExpanded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

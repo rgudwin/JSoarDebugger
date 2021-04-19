@@ -7,6 +7,8 @@ package support;
 
 import Soar.SoarEngine;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -46,16 +48,15 @@ public class MindView extends javax.swing.JFrame implements Observer {
         currentPhase.setHorizontalAlignment(JTextField.CENTER);
         //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
-        System.out.println(rootNode.toStringFull());
-        wmi = new WmeEditor(rootNode,this,false);
-        wmi.setTitle("SOAR Working Memory");
+        //wmi = new WmeEditor(rootNode,this,false);
+        //wmi.setTitle("SOAR Working Memory");
         pack();
         currentRuleFile.setText(soarRulesPath);
         WMNode il = new WMNode("InputLink",sb.inputLink.toString(),0);
         wmpanel = new WMPanel(rootNode,sb,false);
         wmpanel.updateTree();
         jTabbedPane1.removeAll();
-        jTabbedPane1.addTab("Working Memory:", wmPanel);
+        jTabbedPane1.addTab("Working Memory:", wmpanel);
         jTabbedPane1.revalidate();
         jTabbedPane2.removeAll();
         ilpanel = new WMPanel(il,sb,true);
@@ -77,10 +78,10 @@ public class MindView extends javax.swing.JFrame implements Observer {
         startstop = new javax.swing.JButton();
         mstep = new javax.swing.JButton();
         step = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        mexpand = new javax.swing.JButton();
+        mcollapse = new javax.swing.JButton();
+        mfind = new javax.swing.JButton();
+        msendtowm = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         currentRuleFile = new javax.swing.JTextField();
@@ -114,7 +115,9 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mStop = new javax.swing.JMenuItem();
         mWatch = new javax.swing.JMenuItem();
         mEdit = new javax.swing.JMenu();
-        mInputLink = new javax.swing.JMenuItem();
+        ilEdit = new javax.swing.JMenuItem();
+        ilLoad = new javax.swing.JMenuItem();
+        ilSave = new javax.swing.JMenuItem();
         mPrintAllWMEs = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -159,39 +162,44 @@ public class MindView extends javax.swing.JFrame implements Observer {
         });
         jToolBar1.add(step);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/zoom-in-icon.png"))); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        mexpand.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/zoom-in-icon.png"))); // NOI18N
+        mexpand.setFocusable(false);
+        mexpand.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        mexpand.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mexpand.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                mexpandActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        jToolBar1.add(mexpand);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/zoom-out-icon.png"))); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        mcollapse.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/zoom-out-icon.png"))); // NOI18N
+        mcollapse.setFocusable(false);
+        mcollapse.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        mcollapse.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mcollapse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                mcollapseActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
+        jToolBar1.add(mcollapse);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/binoculars.png"))); // NOI18N
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        mfind.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/binoculars.png"))); // NOI18N
+        mfind.setFocusable(false);
+        mfind.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        mfind.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(mfind);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/redo-icon.png"))); // NOI18N
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
+        msendtowm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/redo-icon.png"))); // NOI18N
+        msendtowm.setFocusable(false);
+        msendtowm.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        msendtowm.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        msendtowm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msendtowmActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(msendtowm);
 
         jPanel3.setPreferredSize(new java.awt.Dimension(355, 44));
 
@@ -422,15 +430,31 @@ public class MindView extends javax.swing.JFrame implements Observer {
 
         jMenuBar1.add(mDebug);
 
-        mEdit.setText("Edit");
+        mEdit.setText("InputLink");
 
-        mInputLink.setText("InputLink");
-        mInputLink.addActionListener(new java.awt.event.ActionListener() {
+        ilEdit.setText("Edit");
+        ilEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mInputLinkActionPerformed(evt);
+                ilEditActionPerformed(evt);
             }
         });
-        mEdit.add(mInputLink);
+        mEdit.add(ilEdit);
+
+        ilLoad.setText("Load");
+        ilLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ilLoadActionPerformed(evt);
+            }
+        });
+        mEdit.add(ilLoad);
+
+        ilSave.setText("Save");
+        ilSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ilSaveActionPerformed(evt);
+            }
+        });
+        mEdit.add(ilSave);
 
         mPrintAllWMEs.setText("Print All WMEs");
         mPrintAllWMEs.addActionListener(new java.awt.event.ActionListener() {
@@ -479,17 +503,18 @@ public class MindView extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_mstepActionPerformed
 
     private void startstopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startstopActionPerformed
-        if (debugstate == 0) {
-           startDebugState();
-        }
-        else {
-           stopDebugState();   
-        }
+//        if (debugstate == 0) {
+//           startDebugState();
+//        }
+//        else {
+//           stopDebugState();   
+//        }
+        stepDebugState();
     }//GEN-LAST:event_startstopActionPerformed
 
     private void stepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepActionPerformed
         // TODO add your handling code here:
-        stepDebugState();
+        cycleDebugState();
     }//GEN-LAST:event_stepActionPerformed
 
     private void mWatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mWatchActionPerformed
@@ -497,7 +522,10 @@ public class MindView extends javax.swing.JFrame implements Observer {
         //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
         wmi = new WmeEditor(rootNode,this,false);
-        wmi.setTitle("SOAR Working Memory");
+        Date date = new Date(); 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String currentdate = formatter.format(date);
+        wmi.setTitle("SOAR Working Memory "+currentdate);
         wmi.updateTree();
         wmi.setVisible(true);
     }//GEN-LAST:event_mWatchActionPerformed
@@ -511,34 +539,37 @@ public class MindView extends javax.swing.JFrame implements Observer {
             File file = fc.getSelectedFile();
             //This is where a real application would open the file.
             System.out.println("Opening: " + file.getAbsolutePath());
-            wmi.setVisible(false);
+            //wmi.setVisible(false);
             sb = new SoarEngine(file.getAbsolutePath(),false);
             currentRuleFile.setText(file.getAbsolutePath());
             //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
             WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
-            wmi = new WmeEditor(rootNode,this,false);
-            wmi.setTitle("SOAR Working Memory");
-            wmi.updateTree();
-            wmi.setVisible(true);
+            this.wmpanel.restartPanel(rootNode,sb);
+            System.out.println(wmpanel.getRoot().toStringFull());
+            //wmi = new WmeEditor(rootNode,this,false);
+            //wmi.setTitle("SOAR Working Memory");
+            //wmi.updateTree();
+            //wmi.setVisible(true);
         } else {
             System.out.println("Open command cancelled by user.");
         }
     }//GEN-LAST:event_LoadActionPerformed
 
-    private void mInputLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mInputLinkActionPerformed
+    private void ilEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilEditActionPerformed
         WMNode rootNode = new WMNode("InputLink",sb.getInitialState(),0);
         WmeEditor e = new WmeEditor(rootNode,this,true);
         e.setVisible(true);
-    }//GEN-LAST:event_mInputLinkActionPerformed
+    }//GEN-LAST:event_ilEditActionPerformed
 
     private void mReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReloadActionPerformed
         sb = new SoarEngine(currentRuleFile.getText(),false);
-        wmi.dispose();
+        //wmi.dispose();
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
-        wmi = new WmeEditor(rootNode,this,false);
-        wmi.setTitle("SOAR Working Memory");
-        wmi.updateTree();
-        wmi.setVisible(true);
+        this.wmpanel.restartPanel(rootNode,sb);
+        //wmi = new WmeEditor(rootNode,this,false);
+        //wmi.setTitle("SOAR Working Memory");
+        //wmi.updateTree();
+        //wmi.setVisible(true);
     }//GEN-LAST:event_mReloadActionPerformed
 
     private void mPrintAllWMEsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrintAllWMEsActionPerformed
@@ -550,22 +581,40 @@ public class MindView extends javax.swing.JFrame implements Observer {
             String acc = (w.isAcceptable())?" +":"";
             all += "("+w.getIdentifier().toString()+" "+w.getAttribute().toString()+" "+w.getValue()+acc+")\n";
         }
-        taBig.setText(all);
+        output_link.setText(all);
+        System.out.println(ExpandStateLibrary.dump());
     }//GEN-LAST:event_mPrintAllWMEsActionPerformed
 
     private void currentPhaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentPhaseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_currentPhaseActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void mexpandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mexpandActionPerformed
         // TODO add your handling code here:
-        ((WMPanel)wmPanel).expandAllNodes();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        wmpanel.expandAllNodes();
+    }//GEN-LAST:event_mexpandActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void mcollapseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mcollapseActionPerformed
         // TODO add your handling code here:
-        ((WMPanel)wmPanel).collapseAllNodes();
-    }//GEN-LAST:event_jButton2ActionPerformed
+        wmpanel.collapseAllNodes();
+    }//GEN-LAST:event_mcollapseActionPerformed
+
+    private void msendtowmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msendtowmActionPerformed
+        WMNode root = ilpanel.getRoot();
+        sb.createInputLink(root, sb.inputLink);
+        String wm = sb.stringInputLink();
+        wmpanel.updateTree();
+        setInputLink(wm);
+    }//GEN-LAST:event_msendtowmActionPerformed
+
+    private void ilSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilSaveActionPerformed
+        ilpanel.save();
+    }//GEN-LAST:event_ilSaveActionPerformed
+
+    private void ilLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilLoadActionPerformed
+        ilpanel.load();
+        ilpanel.updateTree2();
+    }//GEN-LAST:event_ilLoadActionPerformed
 
     public void update(Observable arg0, Object arg1) {
         this.repaint();
@@ -574,6 +623,12 @@ public class MindView extends javax.swing.JFrame implements Observer {
     public void step() {
         try {
            sb.step();
+        } catch (Exception e) {e.printStackTrace();}
+    }
+    
+    public void cycle() {
+        try {
+           sb.cycle();
         } catch (Exception e) {e.printStackTrace();}
     }
     
@@ -586,8 +641,9 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mstep.setEnabled(true);
         step.setEnabled(true);
         setPhaseIndication();
-        wmi.updateTree();
-        wmi.setVisible(true);
+        //wmi.updateTree();
+        //wmi.setVisible(true);
+        this.wmpanel.updateTree();
         debugstate = 1;
         try {
            //sb.c.stop();
@@ -602,7 +658,7 @@ public class MindView extends javax.swing.JFrame implements Observer {
         step.setEnabled(false);
         stepDebugState();
         setPhaseIndication();
-        wmi.setVisible(false);
+        //wmi.setVisible(false);
         debugstate = 0;
         try {
               //sb.c.start();
@@ -618,13 +674,30 @@ public class MindView extends javax.swing.JFrame implements Observer {
             set_input_link_text();
             set_output_link_text();
             setPhaseIndication();
-            wmi.updateTree();
-            wmi.setVisible(true);
+            //wmi.updateTree();
+            //wmi.setVisible(true);
+            wmpanel.updateTree();
           } catch (Exception e) {
             e.printStackTrace();
           }
         }
     }
+    
+    public void cycleDebugState() {
+        if (debugstate == 1) {
+          try {
+            sb.cycle();
+            set_input_link_text();
+            set_output_link_text();
+            setPhaseIndication();
+            //wmi.updateTree();
+            //wmi.setVisible(true);
+            wmpanel.updateTree();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+    } 
     
     public void mstepDebugState() {
         if (debugstate == 1) {
@@ -633,8 +706,10 @@ public class MindView extends javax.swing.JFrame implements Observer {
             set_input_link_text();
             set_output_link_text();
             setPhaseIndication();
-            wmi.updateTree();
-            wmi.setVisible(true);
+            //System.out.println("Starting updateTree de WMI");
+            //wmi.updateTree();
+            //System.out.println("Finishing updateTree de WMI");
+            //wmi.setVisible(true);
             wmpanel.updateTree();
           } catch (Exception e) {
             e.printStackTrace();
@@ -682,12 +757,11 @@ public class MindView extends javax.swing.JFrame implements Observer {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField currentPhase;
     private javax.swing.JTextField currentRuleFile;
+    private javax.swing.JMenuItem ilEdit;
+    private javax.swing.JMenuItem ilLoad;
     private javax.swing.JPanel ilPanel;
+    private javax.swing.JMenuItem ilSave;
     private javax.swing.JTextPane input_link;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -709,13 +783,16 @@ public class MindView extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenuItem mExit;
     private javax.swing.JMenu mFile;
-    private javax.swing.JMenuItem mInputLink;
     private javax.swing.JMenuItem mLoad;
     private javax.swing.JMenuItem mPrintAllWMEs;
     private javax.swing.JMenuItem mReload;
     private javax.swing.JMenuItem mStart;
     private javax.swing.JMenuItem mStop;
     private javax.swing.JMenuItem mWatch;
+    private javax.swing.JButton mcollapse;
+    private javax.swing.JButton mexpand;
+    private javax.swing.JButton mfind;
+    private javax.swing.JButton msendtowm;
     private javax.swing.JButton mstep;
     private javax.swing.JPanel olPanel;
     private javax.swing.JTextPane output_link;

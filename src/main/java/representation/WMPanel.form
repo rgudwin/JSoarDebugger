@@ -39,6 +39,10 @@
               <Dimension value="[0, 200]"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jtreeTreeExpanded"/>
+            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="jtreeTreeCollapsed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

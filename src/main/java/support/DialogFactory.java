@@ -359,8 +359,9 @@ public class DialogFactory extends javax.swing.JDialog {
         dialog.setVisible(true);
         dialog.dispose();
         if (dialog.ok == true) {
-            Identifier id = (Identifier) te.getElement();
-           te.setName(dialog.jName.getText()+" ["+id.toString()+"]");
+           WMNode id = (WMNode) te.getElement();
+           id.setName(dialog.jName.getText());
+           te.setName(dialog.jName.getText()+" [*]");
            return(dialog.jName.getText());
         }
         else return null;
@@ -404,6 +405,9 @@ public class DialogFactory extends javax.swing.JDialog {
         dialog.setVisible(true);
         dialog.dispose();
         if (dialog.ok == true) {
+           WMNode id = (WMNode) te.getElement();
+           id.setName(dialog.jName.getText());
+           id.setValue(dialog.jValue.getText());
            te.setName(dialog.jName.getText()+": "+dialog.jValue.getText());
            return(dialog.jName.getText());
         }

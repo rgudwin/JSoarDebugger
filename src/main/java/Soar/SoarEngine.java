@@ -149,6 +149,11 @@ public class SoarEngine
         agent.runFor(1, RunType.PHASES);
         return(getPhase());
     }
+    
+    private int cycleSOAR() {
+        agent.runFor(5, RunType.PHASES);
+        return(getPhase());
+    }
 
     private String GetParameterValue(String par) {
         List<Wme> Commands = Wmes.matcher(agent).filter(agent.getInputOutput().getOutputLink());
@@ -215,6 +220,11 @@ public class SoarEngine
         processOutputLink();
         //processCommands(commandList);
         //resetSimulation();
+    }
+    
+    public void cycle() throws CommandExecException {
+        for (int i=0;i<5;i++) 
+            mstep();
     }
 
 //    private void processCommands(List<Command> commandList) throws CommandExecException
@@ -347,6 +357,7 @@ public class SoarEngine
     }
     
     public void createInputLink(WMNode root, Identifier id) {
+        System.out.println(root+" "+id.toString()+"\n"+root.toStringFull());
         for (WMNode e : root.getL()) {
             System.out.println("Creating the input link for "+id.toString()+" with WMNode "+root.getName());
             createEntityOnParent(e,id,inputLink);
