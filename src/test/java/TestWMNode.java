@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 
+import Soar.SoarEngine;
+import java.util.Date;
+import javax.swing.tree.DefaultMutableTreeNode;
 import org.junit.Test;
 import representation.WMNode;
+import representation.WMPanel;
 
 /**
  *
@@ -25,6 +29,17 @@ public class TestWMNode {
         ln2.add(v1);
         ln3.add(v1);
         System.out.println(ln.toStringFull());
+        Date d = new Date();
+        WMNode complexnode = new WMNode("teste");
+        complexnode.addObject(d,"date");
+        DefaultMutableTreeNode dt = new DefaultMutableTreeNode(d);
+        complexnode.addObject(dt, "defaultMutableTreeNode");
+        complexnode.addObject(complexnode,"recursion");
+        WMPanel wmp = new WMPanel(new WMNode("Root","[S1]",0),new SoarEngine("rules/soar-rules.soar",false),true);
+        complexnode.addObject(wmp, "wmpanel");
+        System.out.println("Finished creation of objects");
+        System.out.println(complexnode.toStringFull());
+        
         
     }
     

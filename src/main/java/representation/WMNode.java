@@ -5,8 +5,13 @@
  */
 package representation;
 
+import com.google.j2objc.annotations.Property;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import support.ToString;
 
 /**
  *
@@ -78,21 +83,42 @@ public class WMNode {
     }
     
     public String toStringFull() {
+        listtoavoidloops = new ArrayList<>();
         return(toStringFull(1));
+    }
+    
+    //List<String> listtoavoidloops = new ArrayList<>();
+    
+    public String toStringPlus() {
+        if (isType(1)) return("- "+name+": "+value);
+        else {
+            String appendix = "";
+            if (value != null && !value.equals("")) appendix = "["+value+"]";
+            return("* "+ name+appendix);
+        }            
     }
     
     public String toStringFull(int level) {
         String out; 
         if (isType(1)) {
-           out="- ";
-           out += name+": "+value+"\n";
+           out = toStringPlus()+"\n";
            return out; 
         }
         else {
-            out="* "+ name+"\n";
+            out = toStringPlus()+"\n";
+            listtoavoidloops.add(toStringPlus());
             for (WMNode ln : l) {
                 for (int i=0;i<level;i++) out += "   ";
-                out += ln.toStringFull(level+1);
+                if (listtoavoidloops.contains(ln.toStringPlus()) || already_exists(ln.toStringPlus())) {
+                    out += ln.toStringPlus()+"\n";
+//                    System.out.println("--------------\nGotcha: "+ln.toStringPlus());
+//                    for (Object o : listtoavoidloops) {
+//                        System.out.println(o.toString());
+//                    }
+//                    System.out.println("--------------");
+                }
+                    
+                else out += ln.toStringFull(level+1);
             }
             return(out);
         }
@@ -202,6 +228,108 @@ public class WMNode {
             }   
         }           
         return(result);
+    }
+    
+    transient static ArrayList<Object> listtoavoidloops = new ArrayList<>();
+    
+    public boolean already_exists(Object o) {
+        for (Object oo : listtoavoidloops)
+           if (oo.hashCode() == o.hashCode()) return true;
+        return false;
+    }
+    
+    public void addObject(Object obj, String fullname) {
+        if (obj == null) {
+            return;
+        }
+        if (listtoavoidloops.contains(obj) || already_exists(obj)) {
+             //System.out.println("Object found in listtoavoidloops");
+             WMNode child = new WMNode(ToString.getSimpleName(fullname),obj.toString(),1);
+             add(child);
+             //DefaultMutableTreeNode node = addString(obj.toString(),fullname);
+            return;            
+        }
+        String s = ToString.from(obj);
+        //System.out.println("listtoavoidloops.size() = "+listtoavoidloops.size());
+        //System.out.println(s+" "+obj.hashCode()+" "+fullname);
+        if (s != null) {
+            //System.out.println(ToString.getSimpleName(fullname)+" "+s);
+            WMNode child = new WMNode(ToString.getSimpleName(fullname),s,1);
+            add(child);
+            //DefaultMutableTreeNode node = addString(s,fullname);
+            return;
+        }
+        else if (obj.getClass().isArray()) {
+            int l = Array.getLength(obj);
+            String type = obj.getClass().getSimpleName();
+            if (l>0) {
+                Object otype = Array.get(obj,0);
+                if (otype != null)
+                    type = otype.getClass().getSimpleName();
+            }
+            if (type.equalsIgnoreCase("Double") || type.equalsIgnoreCase("Integer") || 
+                type.equalsIgnoreCase("String") || type.equalsIgnoreCase("Float") || 
+                type.equalsIgnoreCase("Long") || type.equalsIgnoreCase("Boolean")) {
+                //Property p = new Property(ToString.getSimpleName(fullname));
+                WMNode anode = new WMNode(ToString.getSimpleName(fullname));
+                for (int i=0;i<l;i++) {
+                    Object oo = Array.get(obj,i);
+                    WMNode node = new WMNode(ToString.el(fullname, i),oo,1);
+                    anode.add(node);
+                    //p.addQualityDimension(ToString.el(fullname, i),oo);
+                }
+                this.add(anode);
+            } 
+            else {
+                WMNode onode = new WMNode(ToString.getSimpleName(fullname));
+                for (int i=0;i<l;i++) {
+                    Object oo = Array.get(obj,i);
+                    onode.addObject(oo,ToString.el(fullname, i));
+                }
+                this.add(onode);
+            }    
+            return;
+        }
+        else if (obj instanceof List) {
+            List ll = (List) obj;
+            String label = "";
+            if (ll.size() > 0) label = "List["+ll.size()+"] of "+ll.get(0).getClass().getSimpleName();
+            else label = "List[0]";
+            WMNode onode = new WMNode(ToString.getSimpleName(fullname));
+            int i=0;
+            for (Object o : ll) {
+                onode.addObject(o,ToString.el(fullname,i));
+                i++;
+            }
+            this.add(onode);
+            return;
+        }
+        else if (obj instanceof WMNode) {
+            System.out.println("Haha ... object is already a WMNode");
+            WMNode ao = (WMNode) obj;
+            this.add(ao);
+            listtoavoidloops.add(obj);            
+            return;
+        }
+        else {
+            WMNode ao = new WMNode(ToString.getSimpleName(fullname));
+            listtoavoidloops.add(obj);
+            //System.out.println("Adding obj "+fullname+" to listtoavoidloops");
+            Field[] fields = obj.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                String fname = field.getName();
+                if (!field.isAccessible()) field.setAccessible(true);
+                Object fo=null;
+                try {
+                    fo = field.get(obj);
+                } catch (Exception e) {
+                    e.printStackTrace();} 
+                if (fo != null && !already_exists(fo))
+                   ao.addObject(fo,fullname+"."+fname);  
+            }
+            this.add(ao);
+            return;
+        }
     }
     
 }

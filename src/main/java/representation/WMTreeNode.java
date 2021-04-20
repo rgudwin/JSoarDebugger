@@ -19,7 +19,7 @@ import support.TreeElement;
  */
 public class WMTreeNode extends DefaultMutableTreeNode {
     
-    CopyOnWriteArrayList<WMNode> repr = new CopyOnWriteArrayList();
+    static CopyOnWriteArrayList<WMNode> repr = new CopyOnWriteArrayList();
     
     public WMTreeNode() {
         super(new TreeElement("State", TreeElement.NODE_NORMAL, "State", TreeElement.ICON_MIND));
@@ -124,24 +124,24 @@ public class WMTreeNode extends DefaultMutableTreeNode {
         WMTreeNode root = addRootNode("Root");
         repr = new CopyOnWriteArrayList<WMNode>();
         for (WMNode wm : lwm) {
-            recursion=0;
+            //recursion=0;
             WMTreeNode child = root.addIdentifier(wm);
-            System.out.println(recursion);
+            //System.out.println(recursion);
             ExpandStateLibrary.set(child,true);
         }
         
         Runtime.getRuntime().gc();
-        System.out.println("ExpandState: "+ExpandStateLibrary.size());
-        System.out.println("Free memory (MB): " + (Runtime.getRuntime().freeMemory()/1024)/1024);
-        System.out.println("Total memory (MB): " + (Runtime.getRuntime().totalMemory()/1024)/1024);
-        System.out.println("Maximum memory (MB): " + (Runtime.getRuntime().maxMemory()/1024)/1024);
+//        System.out.println("ExpandState: "+ExpandStateLibrary.size());
+//        System.out.println("Free memory (MB): " + (Runtime.getRuntime().freeMemory()/1024)/1024);
+//        System.out.println("Total memory (MB): " + (Runtime.getRuntime().totalMemory()/1024)/1024);
+//        System.out.println("Maximum memory (MB): " + (Runtime.getRuntime().maxMemory()/1024)/1024);
         return root;
     }
     
-    public WMTreeNode restartInputLinkNode(List<WMNode> lwm) {
-        WMTreeNode root = addRootNode("InputLink");
+    public WMTreeNode restartInputLinkNode(WMNode node) {
+        WMTreeNode root = addRootNode(node.getName());
         ExpandStateLibrary.set(root,true);
-        for (WMNode wm : lwm) {
+        for (WMNode wm : node.getL()) {
             WMTreeNode child = root.addWMNode(wm);
             ExpandStateLibrary.set(child,true);
         }

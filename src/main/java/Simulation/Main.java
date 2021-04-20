@@ -32,8 +32,9 @@ public class Main
             //NativeUtils.loadFileFromJar("/soar-rules.soar");
             //String soarRulesPath = "soar-rules.soar";
             //String soarRulesPath = "/home/rgudwin/Local/Cursos/IA941/SoarTutorial_9.6.0-Multiplatform_64bit/agents/mac/mac.soar";
-            String soarRulesPath = "/home/rgudwin/Local/Cursos/IA941/SoarTutorial_9.6.0-Multiplatform_64bit/agents/TankSoar/tutorial/mapping-bot.soar";
+            //String soarRulesPath = "/home/rgudwin/Local/Cursos/IA941/SoarTutorial_9.6.0-Multiplatform_64bit/agents/TankSoar/tutorial/mapping-bot.soar";
 
+            String soarRulesPath = "rules/soar-rules.soar";
             //Start enviroment data
             //Environment e = new Environment(Boolean.FALSE);
             //SoarBridge soarBridge = new SoarEngine(soarRulesPath,true);

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import org.jsoar.kernel.Agent;
 import org.jsoar.kernel.Phase;
 import org.jsoar.kernel.RunType;
@@ -27,10 +25,6 @@ import org.jsoar.runtime.ThreadedAgent;
 import org.jsoar.util.commands.SoarCommands;
 import representation.WMNode;
 import representation.WMNodeToBeCreated;
-import representation.WMTreeNode;
-import support.ExpandStateLibrary;
-import support.WmeNode;
-import support.WmeToBeCreated;
 import ws3dproxy.CommandExecException;
 
 /**
@@ -49,6 +43,8 @@ public class SoarEngine
     public String input_link_string = "";
     public String output_link_string = "";
     public int phase=0;
+    public WMNode outputLink;
+    public WMNode il = new WMNode("InputLink");
 
     /**
      * Constructor class
@@ -64,7 +60,6 @@ public class SoarEngine
             agent = tag.getAgent();
             SoarCommands.source(agent.getInterpreter(), path);
             inputLink = agent.getInputOutput().getInputLink();
-            System.out.println("SOAR PHASE: "+getPhase());
 
             // Debugger line
             if (startSOARDebugger)
@@ -77,6 +72,15 @@ public class SoarEngine
             logger.severe("Error while creating SOAR Kernel");
             e.printStackTrace();
         }
+    }
+    
+    public WMNode getOutputLink() {
+        Identifier outLink = agent.getInputOutput().getOutputLink();
+        return (addIdentifier2(outLink,"OutputLink"));
+    }
+    
+    public void setInputLink(WMNode node) {
+        il = node;
     }
 
     public Identifier CreateIdWME(Identifier id, String s) {
@@ -105,6 +109,8 @@ public class SoarEngine
     {
         //SymbolFactory sf = agent.getSymbols();
         System.out.println("Preparing InputLink");
+        createInputLink(il, inputLink);
+        System.out.println(il.toStringFull());
         inputLink = agent.getInputOutput().getInputLink();
         try
         {
@@ -121,7 +127,6 @@ public class SoarEngine
 
     private void resetSimulation() {
         agent.initialize();
-        System.out.println("SOAR PHASE: "+getPhase());
     }
     
     /**
@@ -145,13 +150,22 @@ public class SoarEngine
         else return(6);
     }
     
+    public String reasonForStop() {
+        String reason = agent.getReasonForStop();
+        if (reason == null) return("");
+        else return reason;
+    }
+    
     private int stepSOAR() {
         agent.runFor(1, RunType.PHASES);
         return(getPhase());
     }
     
     private int cycleSOAR() {
-        agent.runFor(5, RunType.PHASES);
+        for (int i=0;i<5;i++) {
+            agent.runFor(1, RunType.PHASES);
+            if (agent.getReasonForStop() != null) return(getPhase());
+        }
         return(getPhase());
     }
 
@@ -202,8 +216,11 @@ public class SoarEngine
     
     public void mstep() throws CommandExecException
     {
-        if (phase == -1) prepare_mstep();
-        phase = stepSOAR();
+        if (phase == -1) {
+            prepare_mstep();
+            phase = getPhase();
+        }
+        else phase = stepSOAR();
         if (phase == 5) {
             post_mstep();
             phase = -1;
@@ -223,8 +240,10 @@ public class SoarEngine
     }
     
     public void cycle() throws CommandExecException {
-        for (int i=0;i<5;i++) 
+        for (int i=0;i<5;i++) {
             mstep();
+            if (getPhase() == 5) return;
+        }    
     }
 
 //    private void processCommands(List<Command> commandList) throws CommandExecException
@@ -357,9 +376,7 @@ public class SoarEngine
     }
     
     public void createInputLink(WMNode root, Identifier id) {
-        System.out.println(root+" "+id.toString()+"\n"+root.toStringFull());
         for (WMNode e : root.getL()) {
-            System.out.println("Creating the input link for "+id.toString()+" with WMNode "+root.getName());
             createEntityOnParent(e,id,inputLink);
         }
     }

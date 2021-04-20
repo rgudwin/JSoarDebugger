@@ -46,6 +46,7 @@ public class WMPanel extends javax.swing.JPanel {
     SoarEngine sb = null;
     WMTreeNode rootlink;
     boolean editable;
+    String path=null;
     //MindView mv;
 
     public WMPanel(WMNode rootId, SoarEngine sb, boolean editable) {
@@ -155,6 +156,10 @@ public class WMPanel extends javax.swing.JPanel {
     
     public WMNode getRoot() {
         return(root);
+    }
+    
+    public void setRoot(WMNode root) {
+        this.root = root;
     }
     
     public void restartPanel(WMNode root, SoarEngine sb) {
@@ -331,13 +336,14 @@ public class WMPanel extends javax.swing.JPanel {
 
     public void save() {
         String filename = "";
-        try {JFileChooser chooser = new JFileChooser();
+        try {JFileChooser chooser = new JFileChooser(path);
              if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                   filename = chooser.getSelectedFile().getCanonicalPath();
+                  path = filename;
              }
              if (!filename.equals("")) {
                 File logFile = new File(filename);
-	        BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, false));
                 String s = this.buildFromWMTreeNode(rootlink);
                 writer.write(s);                
                 writer.close();
@@ -353,9 +359,10 @@ public class WMPanel extends javax.swing.JPanel {
         String filename = "";
         WMNode newAO = null;
         List<WMNode> parseAOs = new ArrayList<WMNode>();
-        try {JFileChooser chooser = new JFileChooser();
+        try {JFileChooser chooser = new JFileChooser(path);
              if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                   filename = chooser.getSelectedFile().getCanonicalPath();
+                  path = filename;
              }
              if (!filename.equals("")) {
                 File logFile = new File(filename);
@@ -390,9 +397,9 @@ public class WMPanel extends javax.swing.JPanel {
                 }
                 notifyListeners();
                 reader.close();
+                root = newAO;
              }
         } catch (Exception e) { e.printStackTrace(); }
-        root = newAO;
         return(newAO);
     }
     
@@ -567,7 +574,7 @@ public class WMPanel extends javax.swing.JPanel {
     }
     
     public void updateTree2() {
-       rootlink = rootlink.restartInputLinkNode(root.getL());
+       rootlink = rootlink.restartInputLinkNode(root);
        TreeModel tm = new DefaultTreeModel(rootlink);
        ExpandStateLibrary.set(rootlink, true);
        jtree.setModel(tm);

@@ -6,7 +6,12 @@
 package support;
 
 import Soar.SoarEngine;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -19,6 +24,9 @@ import javax.swing.JTextField;
 import org.jsoar.kernel.memory.Wme;
 import representation.WMNode;
 import representation.WMPanel;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
  *
@@ -35,11 +43,14 @@ public class MindView extends javax.swing.JFrame implements Observer {
     WMPanel ilpanel;
     WMPanel olpanel;
     WMPanel wmpanel;
+    RSyntaxTextArea editor;
+    String rulesPath;
 
     /**
      * Creates new form MindView
      */
     public MindView(String soarRulesPath) {
+        rulesPath = soarRulesPath;
         initComponents();
         sb = new SoarEngine(soarRulesPath,false);
         this.setTitle("JSOAR Debugger");
@@ -62,6 +73,36 @@ public class MindView extends javax.swing.JFrame implements Observer {
         ilpanel = new WMPanel(il,sb,true);
         jTabbedPane2.addTab("Input Link:", ilpanel);
         jTabbedPane2.revalidate();
+        WMNode ol = new WMNode("OutputLink",sb.output_link_string,0);
+        jTabbedPane3.removeAll();
+        olpanel = new WMPanel(ol,sb,false);
+        jTabbedPane3.addTab("Output Link:",olpanel);
+        jTabbedPane3.revalidate();
+        editor = new RSyntaxTextArea(20, 60);
+        editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_LISP);
+        editor.setCodeFoldingEnabled(true);
+        RTextScrollPane sp = new RTextScrollPane(editor);
+        String rules = loadRules(soarRulesPath);
+        editor.setText(rules);
+        jTabbedPane1.addTab("Rules", sp);
+        jTabbedPane1.revalidate();
+        setPhaseIndication();
+    }
+    
+    public String loadRules(String filename) {
+        File logFile = new File(filename);
+        BufferedReader reader=null;
+        String line;
+        String output="";
+        try {
+            reader = new BufferedReader(new FileReader(logFile));
+            while ((line = reader.readLine()) != null) {
+                output += line+"\n";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+        return(output);
     }
     
 
@@ -74,6 +115,9 @@ public class MindView extends javax.swing.JFrame implements Observer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jToolBar2 = new javax.swing.JToolBar();
+        jLabel3 = new javax.swing.JLabel();
+        currentRuleFile = new javax.swing.JTextField();
         jToolBar1 = new javax.swing.JToolBar();
         startstop = new javax.swing.JButton();
         mstep = new javax.swing.JButton();
@@ -83,8 +127,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mfind = new javax.swing.JButton();
         msendtowm = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        currentRuleFile = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         currentPhase = new javax.swing.JTextField();
@@ -96,7 +138,7 @@ public class MindView extends javax.swing.JFrame implements Observer {
         jScrollPane2 = new javax.swing.JScrollPane();
         input_link = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
         olPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         output_link = new javax.swing.JTextPane();
@@ -108,6 +150,8 @@ public class MindView extends javax.swing.JFrame implements Observer {
         jMenuBar1 = new javax.swing.JMenuBar();
         mFile = new javax.swing.JMenu();
         mLoad = new javax.swing.JMenuItem();
+        mLoadEditor = new javax.swing.JMenuItem();
+        mSaveEditor = new javax.swing.JMenuItem();
         mReload = new javax.swing.JMenuItem();
         mExit = new javax.swing.JMenuItem();
         mDebug = new javax.swing.JMenu();
@@ -118,9 +162,21 @@ public class MindView extends javax.swing.JFrame implements Observer {
         ilEdit = new javax.swing.JMenuItem();
         ilLoad = new javax.swing.JMenuItem();
         ilSave = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
         mPrintAllWMEs = new javax.swing.JMenuItem();
+        mESL = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jToolBar2.setFloatable(false);
+        jToolBar2.setAlignmentY(0.0F);
+        jToolBar2.setBorderPainted(false);
+
+        jLabel3.setText(" Rules File: ");
+        jToolBar2.add(jLabel3);
+
+        currentRuleFile.setText(" ");
+        jToolBar2.add(currentRuleFile);
 
         jToolBar1.setRollover(true);
 
@@ -203,26 +259,15 @@ public class MindView extends javax.swing.JFrame implements Observer {
 
         jPanel3.setPreferredSize(new java.awt.Dimension(355, 44));
 
-        jLabel3.setText("Rules File:");
-
-        currentRuleFile.setText(" ");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addGap(0, 427, Short.MAX_VALUE))
-            .addComponent(currentRuleFile)
+            .addGap(0, 510, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(currentRuleFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(84, 84, 84))
+            .addGap(0, 44, Short.MAX_VALUE)
         );
 
         jToolBar1.add(jPanel3);
@@ -295,41 +340,30 @@ public class MindView extends javax.swing.JFrame implements Observer {
 
         jSplitPane1.setLeftComponent(jPanel1);
 
-        jLabel2.setText("OutputLink:");
-
         jScrollPane3.setViewportView(output_link);
 
         javax.swing.GroupLayout olPanelLayout = new javax.swing.GroupLayout(olPanel);
         olPanel.setLayout(olPanelLayout);
         olPanelLayout.setHorizontalGroup(
             olPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(olPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
         );
         olPanelLayout.setVerticalGroup(
             olPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-            .addGroup(olPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
+
+        jTabbedPane3.addTab("Output Link: ", olPanel);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addContainerGap(377, Short.MAX_VALUE))
-            .addComponent(olPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jTabbedPane3)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(olPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jTabbedPane3)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -344,15 +378,15 @@ public class MindView extends javax.swing.JFrame implements Observer {
         wmPanel.setLayout(wmPanelLayout);
         wmPanelLayout.setHorizontalGroup(
             wmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 929, Short.MAX_VALUE)
+            .addGap(0, 939, Short.MAX_VALUE)
             .addGroup(wmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 929, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 939, Short.MAX_VALUE))
         );
         wmPanelLayout.setVerticalGroup(
             wmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 312, Short.MAX_VALUE)
+            .addGap(0, 279, Short.MAX_VALUE)
             .addGroup(wmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Working Memory:", wmPanel);
@@ -361,13 +395,13 @@ public class MindView extends javax.swing.JFrame implements Observer {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 934, Short.MAX_VALUE)
+            .addGap(0, 944, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jTabbedPane1))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 339, Short.MAX_VALUE)
+            .addGap(0, 306, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jTabbedPane1))
         );
@@ -383,6 +417,22 @@ public class MindView extends javax.swing.JFrame implements Observer {
             }
         });
         mFile.add(mLoad);
+
+        mLoadEditor.setText("Load Editor");
+        mLoadEditor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mLoadEditorActionPerformed(evt);
+            }
+        });
+        mFile.add(mLoadEditor);
+
+        mSaveEditor.setText("Save Editor");
+        mSaveEditor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mSaveEditorActionPerformed(evt);
+            }
+        });
+        mFile.add(mSaveEditor);
 
         mReload.setText("Reload");
         mReload.addActionListener(new java.awt.event.ActionListener() {
@@ -456,15 +506,27 @@ public class MindView extends javax.swing.JFrame implements Observer {
         });
         mEdit.add(ilSave);
 
+        jMenuBar1.add(mEdit);
+
+        jMenu1.setText("Support");
+
         mPrintAllWMEs.setText("Print All WMEs");
         mPrintAllWMEs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mPrintAllWMEsActionPerformed(evt);
             }
         });
-        mEdit.add(mPrintAllWMEs);
+        jMenu1.add(mPrintAllWMEs);
 
-        jMenuBar1.add(mEdit);
+        mESL.setText("Print ExpandStateLibrary");
+        mESL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mESLActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mESL);
+
+        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 
@@ -472,13 +534,16 @@ public class MindView extends javax.swing.JFrame implements Observer {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 936, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane2))
         );
@@ -533,19 +598,21 @@ public class MindView extends javax.swing.JFrame implements Observer {
     private void LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadActionPerformed
         // TODO add your handling code here:
         //Create a file chooser
-    JFileChooser fc = new JFileChooser();
+    JFileChooser fc = new JFileChooser(rulesPath);
     int returnVal = fc.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+            rulesPath = file.getAbsolutePath();
             //This is where a real application would open the file.
-            System.out.println("Opening: " + file.getAbsolutePath());
+            //System.out.println("Opening: " + file.getAbsolutePath());
             //wmi.setVisible(false);
             sb = new SoarEngine(file.getAbsolutePath(),false);
             currentRuleFile.setText(file.getAbsolutePath());
             //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
             WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
             this.wmpanel.restartPanel(rootNode,sb);
-            System.out.println(wmpanel.getRoot().toStringFull());
+            //System.out.println(wmpanel.getRoot().toStringFull());
+            setPhaseIndication();
             //wmi = new WmeEditor(rootNode,this,false);
             //wmi.setTitle("SOAR Working Memory");
             //wmi.updateTree();
@@ -566,6 +633,7 @@ public class MindView extends javax.swing.JFrame implements Observer {
         //wmi.dispose();
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
         this.wmpanel.restartPanel(rootNode,sb);
+        setPhaseIndication();
         //wmi = new WmeEditor(rootNode,this,false);
         //wmi.setTitle("SOAR Working Memory");
         //wmi.updateTree();
@@ -581,8 +649,13 @@ public class MindView extends javax.swing.JFrame implements Observer {
             String acc = (w.isAcceptable())?" +":"";
             all += "("+w.getIdentifier().toString()+" "+w.getAttribute().toString()+" "+w.getValue()+acc+")\n";
         }
-        output_link.setText(all);
-        System.out.println(ExpandStateLibrary.dump());
+        InfoPanel ip = new InfoPanel();
+        ip.setText(all);
+        Date date = new Date(); 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String currentdate = formatter.format(date);
+        ip.setTitle("All WMEs in SOAR "+currentdate);
+        ip.setVisible(true);
     }//GEN-LAST:event_mPrintAllWMEsActionPerformed
 
     private void currentPhaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentPhaseActionPerformed
@@ -615,6 +688,44 @@ public class MindView extends javax.swing.JFrame implements Observer {
         ilpanel.load();
         ilpanel.updateTree2();
     }//GEN-LAST:event_ilLoadActionPerformed
+
+    private void mESLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mESLActionPerformed
+        InfoPanel ip = new InfoPanel();
+        ip.setText(ExpandStateLibrary.dump());
+        Date date = new Date(); 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String currentdate = formatter.format(date);
+        ip.setTitle("ExpandStateLibrary "+currentdate);
+        ip.setVisible(true);
+    }//GEN-LAST:event_mESLActionPerformed
+
+    private void mLoadEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mLoadEditorActionPerformed
+       JFileChooser fc = new JFileChooser(rulesPath);
+    int returnVal = fc.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            rulesPath = file.getAbsolutePath();
+            //This is where a real application would open the file.
+            //System.out.println("Opening: " + file.getAbsolutePath());
+            //wmi.setVisible(false);
+            String rules = loadRules(file.getAbsolutePath());
+            editor.setText(rules);
+        } else {
+            System.out.println("Open command cancelled by user.");
+        }
+    }//GEN-LAST:event_mLoadEditorActionPerformed
+
+    private void mSaveEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSaveEditorActionPerformed
+        File rulesFile = new File(rulesPath);
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(rulesFile, false));
+            String s = editor.getText();
+            writer.write(s);                
+            writer.close();
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_mSaveEditorActionPerformed
 
     public void update(Observable arg0, Object arg1) {
         this.repaint();
@@ -740,18 +851,30 @@ public class MindView extends javax.swing.JFrame implements Observer {
     
     public void setOutputLink(String text) {
         output_link.setText(text);
+        WMNode ol = sb.getOutputLink();
+        System.out.println(ol.toStringFull());
+        
     }
     
     public void set_input_link_text() {
         String text;
         text = sb.stringInputLink();
         input_link.setText(text);
+        WMNode node = ilpanel.getRoot();
+        //System.out.println(node.toStringFull());
+        sb.setInputLink(node);
+        wmpanel.updateTree();
     }
     
     public void set_output_link_text() {
         String text;
         text = sb.stringOutputLink();
         output_link.setText(text);
+        System.out.println(sb.reasonForStop());
+        WMNode decision = sb.getOutputLink();
+        //System.out.println(decision.toStringFull());
+        olpanel.setRoot(decision);
+        olpanel.updateTree2();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -762,9 +885,9 @@ public class MindView extends javax.swing.JFrame implements Observer {
     private javax.swing.JPanel ilPanel;
     private javax.swing.JMenuItem ilSave;
     private javax.swing.JTextPane input_link;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -778,14 +901,19 @@ public class MindView extends javax.swing.JFrame implements Observer {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JToolBar jToolBar2;
     private javax.swing.JMenu mDebug;
+    private javax.swing.JMenuItem mESL;
     private javax.swing.JMenu mEdit;
     private javax.swing.JMenuItem mExit;
     private javax.swing.JMenu mFile;
     private javax.swing.JMenuItem mLoad;
+    private javax.swing.JMenuItem mLoadEditor;
     private javax.swing.JMenuItem mPrintAllWMEs;
     private javax.swing.JMenuItem mReload;
+    private javax.swing.JMenuItem mSaveEditor;
     private javax.swing.JMenuItem mStart;
     private javax.swing.JMenuItem mStop;
     private javax.swing.JMenuItem mWatch;

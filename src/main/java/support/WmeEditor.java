@@ -743,7 +743,7 @@ public class WmeEditor extends javax.swing.JFrame {
     }
     
     public void updateTree2() {
-       rootlink = rootlink.restartInputLinkNode(root.getL());
+       rootlink = rootlink.restartInputLinkNode(root);
        System.out.println(root.toStringFull());
        TreeModel tm = new DefaultTreeModel(rootlink);
        ExpandStateLibrary.set(rootlink, true);
