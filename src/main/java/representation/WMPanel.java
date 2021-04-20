@@ -154,6 +154,10 @@ public class WMPanel extends javax.swing.JPanel {
         if (editable) jtree.addMouseListener(ml);
     }
     
+    public WMTreeNode getRootTreeNode() {
+        return(rootlink);
+    }
+    
     public WMNode getRoot() {
         return(root);
     }
@@ -222,24 +226,22 @@ public class WMPanel extends javax.swing.JPanel {
         restoreExpansion(jtree);
     }
     
-    private void deleteComponent(Object parent) {
-        if (parent == null) return;
-        String parentclass = parent.getClass().getCanonicalName();
-        System.out.println("Parent class: "+parentclass);
-        //String childclass = child.getClass().getCanonicalName();
-        if (parent instanceof WMTreeNode){
-            WMTreeNode pnode = (WMTreeNode) parent;
-            System.out.println("Trying to remove "+pnode.getTreeElement().getName()+" from its parent");
-            WMTreeNode pparent = (WMTreeNode) pnode.getParent();
-            WMNode wmparent = (WMNode)pparent.getTreeElement().getElement();
-            WMNode wmtoberemoved = (WMNode) pnode.getTreeElement().getElement();
-            pnode.removeFromParent();
-            if (pparent != null) System.out.println("Now trying to identify the parent WMNode: "+wmparent.toString());
+    private void deleteComponent(Object node) {
+        if (node == null) return;
+        if (node instanceof WMTreeNode){
+            WMTreeNode tnode = (WMTreeNode) node;
+            System.out.println("Trying to remove "+tnode.getTreeElement().getName()+" from its parent");
+            WMTreeNode tparent = (WMTreeNode) tnode.getParent();
+            WMNode wmparent = (WMNode)tparent.getTreeElement().getElement();
+            WMNode wmtoberemoved = (WMNode) tnode.getTreeElement().getElement();
+            tnode.removeFromParent();
+            if (tparent != null) System.out.println("Now trying to identify the parent WMNode: "+wmparent.toString());
             else System.out.println("Unfortunately, its parent is null .....");
             wmparent.getL().remove(wmtoberemoved);
             TreeModel tm = new DefaultTreeModel(rootlink);
             jtree.setModel(tm);
             restoreExpansion(jtree);
+            System.out.println(root.toStringFull());
         }
     }
     
@@ -398,6 +400,8 @@ public class WMPanel extends javax.swing.JPanel {
                 notifyListeners();
                 reader.close();
                 root = newAO;
+                TreeElement oldrootte = (TreeElement)rootlink.getUserObject();
+                oldrootte.setElement(root);
              }
         } catch (Exception e) { e.printStackTrace(); }
         return(newAO);

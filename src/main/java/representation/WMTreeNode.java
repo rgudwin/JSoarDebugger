@@ -145,6 +145,8 @@ public class WMTreeNode extends DefaultMutableTreeNode {
             WMTreeNode child = root.addWMNode(wm);
             ExpandStateLibrary.set(child,true);
         }
+        TreeElement oldrootte = (TreeElement)root.getUserObject();
+        oldrootte.setElement(node);
         return root;
     }
     

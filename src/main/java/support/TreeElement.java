@@ -134,6 +134,10 @@ public class TreeElement {
     public Object getElement() {
         return element;
     }
+    
+    public void setElement(Object el) {
+        this.element = el;
+    }    
 
     public int getId_node() {
         return id_node;
