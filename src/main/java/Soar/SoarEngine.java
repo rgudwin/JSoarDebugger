@@ -25,7 +25,6 @@ import org.jsoar.runtime.ThreadedAgent;
 import org.jsoar.util.commands.SoarCommands;
 import representation.WMNode;
 import representation.WMNodeToBeCreated;
-import ws3dproxy.CommandExecException;
 
 /**
  *
@@ -45,6 +44,7 @@ public class SoarEngine
     public int phase=0;
     public WMNode outputLink;
     public WMNode il = new WMNode("InputLink");
+    static List<Identifier> listtoavoidloops = new ArrayList<>();
 
     /**
      * Constructor class
@@ -105,13 +105,13 @@ public class SoarEngine
     /**
      * Create the WMEs at the InputLink of SOAR
      */
-    private void prepareInputLink() 
+    public void prepareInputLink() 
     {
         //SymbolFactory sf = agent.getSymbols();
-        System.out.println("Preparing InputLink");
-        createInputLink(il, inputLink);
-        System.out.println(il.toStringFull());
+        //System.out.println("Preparing InputLink");
         inputLink = agent.getInputOutput().getInputLink();
+        createInputLink(il, inputLink);
+        //System.out.println(il.toStringFull());
         try
         {
             if (agent != null)
@@ -134,7 +134,7 @@ public class SoarEngine
      */
     private void runSOAR() 
     {
-        agent.runForever(); 
+        agent.runForever();
     }
     
     public int getPhase() {
@@ -191,7 +191,7 @@ public class SoarEngine
      * Perform a complete SOAR step
      * @throws ws3dproxy.CommandExecException
      */
-    public void step() throws CommandExecException
+    public void step() 
     {
         if (phase != -1) finish_msteps();
         resetSimulation();
@@ -214,24 +214,26 @@ public class SoarEngine
     }
     
     
-    public void mstep() throws CommandExecException
+    public void mstep() 
     {
         if (phase == -1) {
             prepare_mstep();
             phase = getPhase();
         }
-        else phase = stepSOAR();
+        else {
+            phase = stepSOAR();
+        }
         if (phase == 5) {
             post_mstep();
             phase = -1;
         }
     }
     
-    public void finish_msteps() throws CommandExecException {
+    public void finish_msteps() {
         while (phase != -1) mstep();
     }
     
-    public void post_mstep() throws CommandExecException {
+    public void post_mstep() {
         output_link_string = stringOutputLink();
         //printOutputWMEs();
         processOutputLink();
@@ -239,7 +241,7 @@ public class SoarEngine
         //resetSimulation();
     }
     
-    public void cycle() throws CommandExecException {
+    public void cycle() {
         for (int i=0;i<5;i++) {
             mstep();
             if (getPhase() == 5) return;
@@ -307,6 +309,7 @@ public class SoarEngine
     }
     
     public String stringWME(Identifier id) {
+        listtoavoidloops = new ArrayList<>();
         String out = stringWME(id,0);
         return(out);
     }
@@ -321,11 +324,14 @@ public class SoarEngine
             Symbol v = wme.getValue();
             Identifier testv = v.asIdentifier();
             for (int i=0;i<level;i++) out += "   ";
-            if (testv != null) {
+            if (testv != null && !listtoavoidloops.contains(id)) {
                 out += "("+idd.toString()+","+a.toString()+","+v.toString()+")\n";
                 out += stringWME(testv,level+1);
             }
-            else out += "("+idd.toString()+","+a.toString()+","+v.toString()+")\n";
+            else {
+                out += "("+idd.toString()+","+a.toString()+","+v.toString()+")\n";
+                listtoavoidloops.add(id);
+            }
         }
        return(out); 
     }
@@ -376,6 +382,7 @@ public class SoarEngine
     }
     
     public void createInputLink(WMNode root, Identifier id) {
+        inputLink = agent.getInputOutput().getInputLink();
         for (WMNode e : root.getL()) {
             createEntityOnParent(e,id,inputLink);
         }

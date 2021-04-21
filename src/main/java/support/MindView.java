@@ -89,21 +89,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
         setPhaseIndication();
     }
     
-    public String loadRules(String filename) {
-        File logFile = new File(filename);
-        BufferedReader reader=null;
-        String line;
-        String output="";
-        try {
-            reader = new BufferedReader(new FileReader(logFile));
-            while ((line = reader.readLine()) != null) {
-                output += line+"\n";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }    
-        return(output);
-    }
     
 
     /**
@@ -568,21 +553,87 @@ public class MindView extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_mstepActionPerformed
 
     private void startstopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startstopActionPerformed
-//        if (debugstate == 0) {
-//           startDebugState();
-//        }
-//        else {
-//           stopDebugState();   
-//        }
         stepDebugState();
     }//GEN-LAST:event_startstopActionPerformed
 
     private void stepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepActionPerformed
-        // TODO add your handling code here:
         cycleDebugState();
     }//GEN-LAST:event_stepActionPerformed
 
     private void mWatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mWatchActionPerformed
+        mWatch();
+    }//GEN-LAST:event_mWatchActionPerformed
+
+    private void LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadActionPerformed
+        Load();
+    }//GEN-LAST:event_LoadActionPerformed
+
+    private void ilEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilEditActionPerformed
+        ilEdit();
+    }//GEN-LAST:event_ilEditActionPerformed
+
+    private void mReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReloadActionPerformed
+        mReload();
+    }//GEN-LAST:event_mReloadActionPerformed
+
+    private void mPrintAllWMEsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrintAllWMEsActionPerformed
+        mPrintAllWMEs();
+    }//GEN-LAST:event_mPrintAllWMEsActionPerformed
+
+    private void currentPhaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentPhaseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_currentPhaseActionPerformed
+
+    private void mexpandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mexpandActionPerformed
+        wmpanel.expandAllNodes();
+    }//GEN-LAST:event_mexpandActionPerformed
+
+    private void mcollapseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mcollapseActionPerformed
+        wmpanel.collapseAllNodes();
+    }//GEN-LAST:event_mcollapseActionPerformed
+
+    private void msendtowmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msendtowmActionPerformed
+        mSendToWM();
+    }//GEN-LAST:event_msendtowmActionPerformed
+
+    private void ilSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilSaveActionPerformed
+        ilpanel.save();
+    }//GEN-LAST:event_ilSaveActionPerformed
+
+    private void ilLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilLoadActionPerformed
+        ilLoad();
+    }//GEN-LAST:event_ilLoadActionPerformed
+
+    private void mESLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mESLActionPerformed
+        mESL();
+    }//GEN-LAST:event_mESLActionPerformed
+
+    private void mLoadEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mLoadEditorActionPerformed
+        mLoadEditor();
+    }//GEN-LAST:event_mLoadEditorActionPerformed
+
+    private void mSaveEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSaveEditorActionPerformed
+        mSave();
+    }//GEN-LAST:event_mSaveEditorActionPerformed
+
+    public String loadRules(String filename) {
+        File logFile = new File(filename);
+        BufferedReader reader=null;
+        String line;
+        String output="";
+        try {
+            reader = new BufferedReader(new FileReader(logFile));
+            while ((line = reader.readLine()) != null) {
+                output += line+"\n";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }    
+        return(output);
+    }
+    
+    
+    public void mWatch() {
         // TODO add your handling code here:
         //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
@@ -593,54 +644,50 @@ public class MindView extends javax.swing.JFrame implements Observer {
         wmi.setTitle("SOAR Working Memory "+currentdate);
         wmi.updateTree();
         wmi.setVisible(true);
-    }//GEN-LAST:event_mWatchActionPerformed
-
-    private void LoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadActionPerformed
-        // TODO add your handling code here:
-        //Create a file chooser
+    }
+    
+    
+    public void Load() {
+                //Create a file chooser
     JFileChooser fc = new JFileChooser(rulesPath);
     int returnVal = fc.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             rulesPath = file.getAbsolutePath();
-            //This is where a real application would open the file.
-            //System.out.println("Opening: " + file.getAbsolutePath());
-            //wmi.setVisible(false);
             sb = new SoarEngine(file.getAbsolutePath(),false);
             currentRuleFile.setText(file.getAbsolutePath());
-            //wmi = new WorkingMemoryViewer("SOAR Working Memory",sb);
             WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
             this.wmpanel.restartPanel(rootNode,sb);
-            //System.out.println(wmpanel.getRoot().toStringFull());
             setPhaseIndication();
-            //wmi = new WmeEditor(rootNode,this,false);
-            //wmi.setTitle("SOAR Working Memory");
-            //wmi.updateTree();
-            //wmi.setVisible(true);
+            WMNode il = ilpanel.getRoot();
+            sb.setInputLink(il);
+            sb.prepareInputLink();
+            wmpanel.updateTree();
+            setPhaseIndication();
         } else {
             System.out.println("Open command cancelled by user.");
         }
-    }//GEN-LAST:event_LoadActionPerformed
-
-    private void ilEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilEditActionPerformed
+    }
+    
+    public void ilEdit() {
         WMNode rootNode = new WMNode("InputLink",sb.getInitialState(),0);
         WmeEditor e = new WmeEditor(rootNode,this,true);
         e.setVisible(true);
-    }//GEN-LAST:event_ilEditActionPerformed
-
-    private void mReloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mReloadActionPerformed
+    }
+    
+    public void mReload() {
         sb = new SoarEngine(currentRuleFile.getText(),false);
         //wmi.dispose();
         WMNode rootNode = new WMNode("Root",sb.getInitialState(),0);
         this.wmpanel.restartPanel(rootNode,sb);
+        WMNode il = ilpanel.getRoot();
+        sb.setInputLink(il);
+        sb.prepareInputLink();
+        wmpanel.updateTree();
         setPhaseIndication();
-        //wmi = new WmeEditor(rootNode,this,false);
-        //wmi.setTitle("SOAR Working Memory");
-        //wmi.updateTree();
-        //wmi.setVisible(true);
-    }//GEN-LAST:event_mReloadActionPerformed
-
-    private void mPrintAllWMEsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mPrintAllWMEsActionPerformed
+    }
+    
+    public void mPrintAllWMEs() {
         Set<Wme> allwmes = sb.getWorkingMemory();
         Iterator<Wme> It = allwmes.iterator();
         String all = "";
@@ -656,40 +703,27 @@ public class MindView extends javax.swing.JFrame implements Observer {
         String currentdate = formatter.format(date);
         ip.setTitle("All WMEs in SOAR "+currentdate);
         ip.setVisible(true);
-    }//GEN-LAST:event_mPrintAllWMEsActionPerformed
-
-    private void currentPhaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_currentPhaseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_currentPhaseActionPerformed
-
-    private void mexpandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mexpandActionPerformed
-        // TODO add your handling code here:
-        wmpanel.expandAllNodes();
-    }//GEN-LAST:event_mexpandActionPerformed
-
-    private void mcollapseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mcollapseActionPerformed
-        // TODO add your handling code here:
-        wmpanel.collapseAllNodes();
-    }//GEN-LAST:event_mcollapseActionPerformed
-
-    private void msendtowmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msendtowmActionPerformed
+    }
+    
+    public void mSendToWM() {
         WMNode root = ilpanel.getRoot();
         sb.createInputLink(root, sb.inputLink);
         String wm = sb.stringInputLink();
         wmpanel.updateTree();
         setInputLink(wm);
-    }//GEN-LAST:event_msendtowmActionPerformed
-
-    private void ilSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilSaveActionPerformed
-        ilpanel.save();
-    }//GEN-LAST:event_ilSaveActionPerformed
-
-    private void ilLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ilLoadActionPerformed
+    }
+    
+    public void ilLoad() {
         ilpanel.load();
         ilpanel.updateTree2();
-    }//GEN-LAST:event_ilLoadActionPerformed
-
-    private void mESLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mESLActionPerformed
+        WMNode il = ilpanel.getRoot();
+        sb.setInputLink(il);
+        sb.prepareInputLink();
+        wmpanel.updateTree();
+        setPhaseIndication();
+    }
+    
+    public void mESL() {
         InfoPanel ip = new InfoPanel();
         ip.setText(ExpandStateLibrary.dump());
         Date date = new Date(); 
@@ -697,25 +731,22 @@ public class MindView extends javax.swing.JFrame implements Observer {
         String currentdate = formatter.format(date);
         ip.setTitle("ExpandStateLibrary "+currentdate);
         ip.setVisible(true);
-    }//GEN-LAST:event_mESLActionPerformed
-
-    private void mLoadEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mLoadEditorActionPerformed
-       JFileChooser fc = new JFileChooser(rulesPath);
-    int returnVal = fc.showOpenDialog(this);
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
+    }
+    
+    public void mLoadEditor() {
+        JFileChooser fc = new JFileChooser(rulesPath);
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             rulesPath = file.getAbsolutePath();
-            //This is where a real application would open the file.
-            //System.out.println("Opening: " + file.getAbsolutePath());
-            //wmi.setVisible(false);
-            String rules = loadRules(file.getAbsolutePath());
+            String rules = loadRules(rulesPath);
             editor.setText(rules);
         } else {
             System.out.println("Open command cancelled by user.");
         }
-    }//GEN-LAST:event_mLoadEditorActionPerformed
-
-    private void mSaveEditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mSaveEditorActionPerformed
+    }
+    
+    public void mSave() {
         File rulesFile = new File(rulesPath);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(rulesFile, false));
@@ -725,8 +756,8 @@ public class MindView extends javax.swing.JFrame implements Observer {
         } catch(IOException ex) {
             ex.printStackTrace();
         }
-    }//GEN-LAST:event_mSaveEditorActionPerformed
-
+    }
+    
     public void update(Observable arg0, Object arg1) {
         this.repaint();
     }

@@ -148,26 +148,26 @@ public class DialogFactory extends javax.swing.JDialog {
         setVisible(false);
     }//GEN-LAST:event_jCancelActionPerformed
     
-    public static WmeNode getIdentifier(WmeNode baseNode, SoarEngine sb) {
-
-    DialogFactory dialog = new DialogFactory(null,true);
-    dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-    //dialog.setBounds(350, 350, 200, 200);
-    dialog.setTitle("Enter WME data ...");
-    dialog.jValue.setEditable(false);
-    dialog.jValue.setEnabled(false);
-    //RefineryUtilities.centerFrameOnScreen(dialog);
-    dialog.setVisible(true);
-    dialog.dispose();
-    if (dialog.ok == true) {
-        String newname = dialog.jName.getText();
-        Identifier parent = (Identifier)((TreeElement)baseNode.getUserObject()).getElement();
-        Identifier output = sb.CreateIdWME(parent,newname);
-        WmeNode newnode = baseNode.addIdentifier(output,newname );
-        return(newnode);
-    }
-    else return(null);
-    }
+//    public static WmeNode getIdentifier(WmeNode baseNode, SoarEngine sb) {
+//
+//    DialogFactory dialog = new DialogFactory(null,true);
+//    dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+//    //dialog.setBounds(350, 350, 200, 200);
+//    dialog.setTitle("Enter WME data ...");
+//    dialog.jValue.setEditable(false);
+//    dialog.jValue.setEnabled(false);
+//    //RefineryUtilities.centerFrameOnScreen(dialog);
+//    dialog.setVisible(true);
+//    dialog.dispose();
+//    if (dialog.ok == true) {
+//        String newname = dialog.jName.getText();
+//        Identifier parent = (Identifier)((TreeElement)baseNode.getUserObject()).getElement();
+//        Identifier output = sb.CreateIdWME(parent,newname);
+//        WmeNode newnode = baseNode.addIdentifier(output,newname );
+//        return(newnode);
+//    }
+//    else return(null);
+//    }
     
     public static WMTreeNode getIdentifier(WMTreeNode baseNode, SoarEngine sb) {
 
@@ -191,32 +191,32 @@ public class DialogFactory extends javax.swing.JDialog {
     else return(null);
     }
     
-    public static WmeNode getValue(WmeNode baseNode, SoarEngine sb) {
-
-    DialogFactory dialog = new DialogFactory(null,true);
-    dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-    //dialog.setBounds(350, 350, 200, 200);
-    dialog.setTitle("Enter child WME value ...");
-    dialog.jValue.setEditable(true);
-    dialog.jValue.setEnabled(true);
-    //RefineryUtilities.centerFrameOnScreen(dialog);
-    dialog.setVisible(true);
-    dialog.dispose();
-    if (dialog.ok == true) {
-        String newname = dialog.jName.getText();
-        String newvalue = dialog.jValue.getText();
-        Identifier parent = (Identifier)((TreeElement)baseNode.getUserObject()).getElement();
-        try {
-           double dvalue = Double.parseDouble(newvalue); 
-           sb.CreateFloatWME(parent,newname, dvalue);
-        } catch(Exception e) {
-           sb.CreateStringWME(parent, newname, newvalue);
-        }
-        WmeNode newnode = baseNode.addValue(newname,newvalue);
-        return(newnode);
-    }
-    else return(null);
-    } 
+//    public static WmeNode getValue(WmeNode baseNode, SoarEngine sb) {
+//
+//    DialogFactory dialog = new DialogFactory(null,true);
+//    dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+//    //dialog.setBounds(350, 350, 200, 200);
+//    dialog.setTitle("Enter child WME value ...");
+//    dialog.jValue.setEditable(true);
+//    dialog.jValue.setEnabled(true);
+//    //RefineryUtilities.centerFrameOnScreen(dialog);
+//    dialog.setVisible(true);
+//    dialog.dispose();
+//    if (dialog.ok == true) {
+//        String newname = dialog.jName.getText();
+//        String newvalue = dialog.jValue.getText();
+//        Identifier parent = (Identifier)((TreeElement)baseNode.getUserObject()).getElement();
+//        try {
+//           double dvalue = Double.parseDouble(newvalue); 
+//           sb.CreateFloatWME(parent,newname, dvalue);
+//        } catch(Exception e) {
+//           sb.CreateStringWME(parent, newname, newvalue);
+//        }
+//        WmeNode newnode = baseNode.addValue(newname,newvalue);
+//        return(newnode);
+//    }
+//    else return(null);
+//    } 
     
     public static WMTreeNode getValue(WMTreeNode baseNode, SoarEngine sb) {
 
@@ -322,27 +322,27 @@ public class DialogFactory extends javax.swing.JDialog {
 //    else return(null);
 //}
 
-    public static String editIdentifier(WmeNode node) {
-        DialogFactory dialog = new DialogFactory(null,true);
-        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        //dialog.setBounds(350, 350, 200, 200);
-        dialog.setTitle("Edit Wme data ...");
-        dialog.jValue.setEditable(false);
-        dialog.jValue.setEnabled(false);
-        TreeElement te = (TreeElement) node.getUserObject();
-        String text = te.getName();
-        String tudo[] = text.split(" ");
-        dialog.jName.setText(tudo[0]);
-        //RefineryUtilities.centerFrameOnScreen(dialog);
-        dialog.setVisible(true);
-        dialog.dispose();
-        if (dialog.ok == true) {
-            Identifier id = (Identifier) te.getElement();
-           te.setName(dialog.jName.getText()+" ["+id.toString()+"]");
-           return(dialog.jName.getText());
-        }
-        else return null;
-    }
+//    public static String editIdentifier(WmeNode node) {
+//        DialogFactory dialog = new DialogFactory(null,true);
+//        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+//        //dialog.setBounds(350, 350, 200, 200);
+//        dialog.setTitle("Edit Wme data ...");
+//        dialog.jValue.setEditable(false);
+//        dialog.jValue.setEnabled(false);
+//        TreeElement te = (TreeElement) node.getUserObject();
+//        String text = te.getName();
+//        String tudo[] = text.split(" ");
+//        dialog.jName.setText(tudo[0]);
+//        //RefineryUtilities.centerFrameOnScreen(dialog);
+//        dialog.setVisible(true);
+//        dialog.dispose();
+//        if (dialog.ok == true) {
+//            Identifier id = (Identifier) te.getElement();
+//           te.setName(dialog.jName.getText()+" ["+id.toString()+"]");
+//           return(dialog.jName.getText());
+//        }
+//        else return null;
+//    }
     
     public static String editIdentifier(WMTreeNode node) {
         DialogFactory dialog = new DialogFactory(null,true);
@@ -367,27 +367,27 @@ public class DialogFactory extends javax.swing.JDialog {
         else return null;
     }
     
-    public static String editValue(WmeNode node) {
-        DialogFactory dialog = new DialogFactory(null,true);
-        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        //dialog.setBounds(350, 350, 200, 200);
-        dialog.setTitle("Edit Wme data ...");
-        dialog.jValue.setEditable(true);
-        dialog.jValue.setEnabled(true);
-        TreeElement te = (TreeElement) node.getUserObject();
-        String text = te.getName();
-        String tudo[] = text.split(": ");
-        dialog.jName.setText(tudo[0]);
-        dialog.jValue.setText(tudo[1]);
-        //RefineryUtilities.centerFrameOnScreen(dialog);
-        dialog.setVisible(true);
-        dialog.dispose();
-        if (dialog.ok == true) {
-           te.setName(dialog.jName.getText()+": "+dialog.jValue.getText());
-           return(dialog.jName.getText());
-        }
-        else return null;
-    }
+//    public static String editValue(WmeNode node) {
+//        DialogFactory dialog = new DialogFactory(null,true);
+//        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+//        //dialog.setBounds(350, 350, 200, 200);
+//        dialog.setTitle("Edit Wme data ...");
+//        dialog.jValue.setEditable(true);
+//        dialog.jValue.setEnabled(true);
+//        TreeElement te = (TreeElement) node.getUserObject();
+//        String text = te.getName();
+//        String tudo[] = text.split(": ");
+//        dialog.jName.setText(tudo[0]);
+//        dialog.jValue.setText(tudo[1]);
+//        //RefineryUtilities.centerFrameOnScreen(dialog);
+//        dialog.setVisible(true);
+//        dialog.dispose();
+//        if (dialog.ok == true) {
+//           te.setName(dialog.jName.getText()+": "+dialog.jValue.getText());
+//           return(dialog.jName.getText());
+//        }
+//        else return null;
+//    }
     
     public static String editValue(WMTreeNode node) {
         DialogFactory dialog = new DialogFactory(null,true);

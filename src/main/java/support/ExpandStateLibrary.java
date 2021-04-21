@@ -34,15 +34,15 @@ public class ExpandStateLibrary {
         else return(retorno);
     }
     
-    public static Boolean get(WmeNode node) {
-        WmeNode parent = (WmeNode) node.getParent();
-        String identifier;
-        if (parent != null) identifier = ((TreeElement)parent.getUserObject()).getName();
-        else identifier = "";
-        String attribute = ((TreeElement)node.getUserObject()).getName();
-        String value = ((TreeElement)node.getUserObject()).getValue();
-        return(get(identifier,attribute,value));
-    }
+//    public static Boolean get(WmeNode node) {
+//        WmeNode parent = (WmeNode) node.getParent();
+//        String identifier;
+//        if (parent != null) identifier = ((TreeElement)parent.getUserObject()).getName();
+//        else identifier = "";
+//        String attribute = ((TreeElement)node.getUserObject()).getName();
+//        String value = ((TreeElement)node.getUserObject()).getValue();
+//        return(get(identifier,attribute,value));
+//    }
     
     public static Boolean get(WMTreeNode node) {
         WMTreeNode parent = (WMTreeNode) node.getParent();
@@ -64,15 +64,15 @@ public class ExpandStateLibrary {
         repository.put(key,expandstate);
     }
     
-    public static void set(WmeNode node,boolean expandstate) {
-        WmeNode parent = (WmeNode) node.getParent();
-        String identifier;
-        if (parent != null) identifier = ((TreeElement)parent.getUserObject()).getName();
-        else identifier = "";
-        String attribute = ((TreeElement)node.getUserObject()).getName();
-        String value = ((TreeElement)node.getUserObject()).getValue();
-        set(identifier,attribute,value,expandstate);
-    }
+//    public static void set(WmeNode node,boolean expandstate) {
+//        WmeNode parent = (WmeNode) node.getParent();
+//        String identifier;
+//        if (parent != null) identifier = ((TreeElement)parent.getUserObject()).getName();
+//        else identifier = "";
+//        String attribute = ((TreeElement)node.getUserObject()).getName();
+//        String value = ((TreeElement)node.getUserObject()).getValue();
+//        set(identifier,attribute,value,expandstate);
+//    }
     
     public static void set(WMTreeNode node,boolean expandstate) {
         WMTreeNode parent = (WMTreeNode) node.getParent();

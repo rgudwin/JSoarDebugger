@@ -6,7 +6,6 @@
 package support;
 
 import java.util.HashMap;
-import org.jsoar.kernel.memory.Wme;
 
 /**
  *

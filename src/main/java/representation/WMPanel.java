@@ -33,7 +33,6 @@ import support.DialogFactory;
 import support.ExpandStateLibrary;
 import support.RendererJTree;
 import support.TreeElement;
-import support.WmeEditorListener;
 
 /**
  *
@@ -42,7 +41,7 @@ import support.WmeEditorListener;
 public class WMPanel extends javax.swing.JPanel {
     
     WMNode root;
-    List<WmeEditorListener> listeners;
+    //List<WmeEditorListener> listeners;
     SoarEngine sb = null;
     WMTreeNode rootlink;
     boolean editable;
@@ -55,7 +54,7 @@ public class WMPanel extends javax.swing.JPanel {
         this.editable = editable;
         if (rootId != null) root = rootId;
         else root = new WMNode("InputLink","I2",0);
-        listeners = new ArrayList<WmeEditorListener>();
+        //listeners = new ArrayList<WmeEditorListener>();
         initComponents();
         //if (editable == false) send.setEnabled(false);
         jsp.setViewportView(jtree);
@@ -172,15 +171,15 @@ public class WMPanel extends javax.swing.JPanel {
         updateTree();
     }
     
-    public void addListener(WmeEditorListener listener) {
-        listeners.add(listener);
-    }
-    
-    private void notifyListeners() {
-        for (WmeEditorListener listener : listeners) {
-            //listener.notifyRootChange(root);
-        }
-    }
+//    public void addListener(WmeEditorListener listener) {
+//        listeners.add(listener);
+//    }
+//    
+//    private void notifyListeners() {
+//        for (WmeEditorListener listener : listeners) {
+//            //listener.notifyRootChange(root);
+//        }
+//    }
     
     private void createIdentifier(WMTreeNode parent) {
         TreeElement.reset();
@@ -230,18 +229,14 @@ public class WMPanel extends javax.swing.JPanel {
         if (node == null) return;
         if (node instanceof WMTreeNode){
             WMTreeNode tnode = (WMTreeNode) node;
-            System.out.println("Trying to remove "+tnode.getTreeElement().getName()+" from its parent");
             WMTreeNode tparent = (WMTreeNode) tnode.getParent();
             WMNode wmparent = (WMNode)tparent.getTreeElement().getElement();
             WMNode wmtoberemoved = (WMNode) tnode.getTreeElement().getElement();
             tnode.removeFromParent();
-            if (tparent != null) System.out.println("Now trying to identify the parent WMNode: "+wmparent.toString());
-            else System.out.println("Unfortunately, its parent is null .....");
             wmparent.getL().remove(wmtoberemoved);
             TreeModel tm = new DefaultTreeModel(rootlink);
             jtree.setModel(tm);
             restoreExpansion(jtree);
-            System.out.println(root.toStringFull());
         }
     }
     
@@ -397,7 +392,7 @@ public class WMPanel extends javax.swing.JPanel {
                           }                            
                     }
                 }
-                notifyListeners();
+                //notifyListeners();
                 reader.close();
                 root = newAO;
                 TreeElement oldrootte = (TreeElement)rootlink.getUserObject();
