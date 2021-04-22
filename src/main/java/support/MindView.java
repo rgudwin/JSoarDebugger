@@ -34,6 +34,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 public class MindView extends javax.swing.JFrame implements Observer {
     
+    final String version = "v0.1";
     int debugstate = 1;
     public SoarEngine sb;
     ImageIcon pause_icon = new ImageIcon(getClass().getResource("/images/pause-icon.png")); 
@@ -53,7 +54,7 @@ public class MindView extends javax.swing.JFrame implements Observer {
         rulesPath = soarRulesPath;
         initComponents();
         sb = new SoarEngine(soarRulesPath,false);
-        this.setTitle("JSOAR Debugger");
+        this.setTitle("JSOAR Debugger "+version);
         jSplitPane1.setDividerLocation(0.5);
         jSplitPane1.setResizeWeight(.5d);
         currentPhase.setHorizontalAlignment(JTextField.CENTER);
@@ -140,8 +141,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mReload = new javax.swing.JMenuItem();
         mExit = new javax.swing.JMenuItem();
         mDebug = new javax.swing.JMenu();
-        mStart = new javax.swing.JMenuItem();
-        mStop = new javax.swing.JMenuItem();
         mWatch = new javax.swing.JMenuItem();
         mEdit = new javax.swing.JMenu();
         ilEdit = new javax.swing.JMenuItem();
@@ -154,7 +153,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jToolBar2.setFloatable(false);
-        jToolBar2.setAlignmentY(0.0F);
         jToolBar2.setBorderPainted(false);
 
         jLabel3.setText(" Rules File: ");
@@ -229,6 +227,11 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mfind.setFocusable(false);
         mfind.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         mfind.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mfind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mfindActionPerformed(evt);
+            }
+        });
         jToolBar1.add(mfind);
 
         msendtowm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/redo-icon.png"))); // NOI18N
@@ -439,22 +442,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
 
         mDebug.setText("Debug");
 
-        mStart.setText("Start");
-        mStart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mStartActionPerformed(evt);
-            }
-        });
-        mDebug.add(mStart);
-
-        mStop.setText("Stop");
-        mStop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mStopActionPerformed(evt);
-            }
-        });
-        mDebug.add(mStop);
-
         mWatch.setText("Watch");
         mWatch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -536,14 +523,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mStopActionPerformed
-        stopDebugState();
-    }//GEN-LAST:event_mStopActionPerformed
-
-    private void mStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mStartActionPerformed
-        startDebugState();  
-    }//GEN-LAST:event_mStartActionPerformed
-
     private void mExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_mExitActionPerformed
@@ -616,6 +595,10 @@ public class MindView extends javax.swing.JFrame implements Observer {
         mSave();
     }//GEN-LAST:event_mSaveEditorActionPerformed
 
+    private void mfindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mfindActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mfindActionPerformed
+
     public String loadRules(String filename) {
         File logFile = new File(filename);
         BufferedReader reader=null;
@@ -642,7 +625,7 @@ public class MindView extends javax.swing.JFrame implements Observer {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String currentdate = formatter.format(date);
         wmi.setTitle("SOAR Working Memory "+currentdate);
-        wmi.updateTree();
+        wmi.wmp.updateTree();
         wmi.setVisible(true);
     }
     
@@ -945,8 +928,6 @@ public class MindView extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenuItem mPrintAllWMEs;
     private javax.swing.JMenuItem mReload;
     private javax.swing.JMenuItem mSaveEditor;
-    private javax.swing.JMenuItem mStart;
-    private javax.swing.JMenuItem mStop;
     private javax.swing.JMenuItem mWatch;
     private javax.swing.JButton mcollapse;
     private javax.swing.JButton mexpand;

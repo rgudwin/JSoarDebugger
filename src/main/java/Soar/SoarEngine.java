@@ -81,7 +81,7 @@ public class SoarEngine
     
     public void setInputLink(WMNode node) {
         il = node;
-    }
+    }    
 
     public Identifier CreateIdWME(Identifier id, String s) {
         SymbolFactory sf = agent.getSymbols();

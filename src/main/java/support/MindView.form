@@ -56,22 +56,6 @@
             <Property name="text" type="java.lang.String" value="Debug"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="mStart">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Start"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mStartActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mStop">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Stop"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mStopActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mWatch">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Watch"/>
@@ -183,7 +167,6 @@
     <Container class="javax.swing.JToolBar" name="jToolBar2">
       <Properties>
         <Property name="floatable" type="boolean" value="false"/>
-        <Property name="alignmentY" type="float" value="0.0"/>
         <Property name="borderPainted" type="boolean" value="false"/>
       </Properties>
 
@@ -287,6 +270,9 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mfindActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="msendtowm">
           <Properties>

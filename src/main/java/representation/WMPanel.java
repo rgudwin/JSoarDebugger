@@ -240,7 +240,7 @@ public class WMPanel extends javax.swing.JPanel {
         }
     }
     
-    private void expanded(TreeExpansionEvent evt) {
+    public void expanded(TreeExpansionEvent evt) {
         TreePath tp = evt.getPath();
         Object[] path = tp.getPath();
         for (Object t : path) {
@@ -254,7 +254,7 @@ public class WMPanel extends javax.swing.JPanel {
         }
     }
     
-    private void collapse(TreeExpansionEvent evt) {
+    public void collapse(TreeExpansionEvent evt) {
         TreePath tp = evt.getPath();
         Object[] path = tp.getPath();
         for (Object t : path) {
