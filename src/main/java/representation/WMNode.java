@@ -5,7 +5,6 @@
  */
 package representation;
 
-import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;

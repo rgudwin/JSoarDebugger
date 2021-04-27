@@ -7,7 +7,6 @@ package support;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.jsoar.kernel.symbols.Identifier;
 import representation.WMTreeNode;
 
 /**
