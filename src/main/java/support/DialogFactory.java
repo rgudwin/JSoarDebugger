@@ -298,7 +298,8 @@ public class DialogFactory extends javax.swing.JDialog {
     dialog.setVisible(true);
     dialog.dispose();
     if (dialog.ok == true) {
-        Double output = new Double(dialog.jName.getText());
+        Double output = Double.valueOf(dialog.jName.getText());
+                //new Double(dialog.jName.getText());
         return(output);
     }
     else return(null);

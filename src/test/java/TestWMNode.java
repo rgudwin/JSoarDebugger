@@ -35,7 +35,7 @@ public class TestWMNode {
         DefaultMutableTreeNode dt = new DefaultMutableTreeNode(d);
         complexnode.addObject(dt, "defaultMutableTreeNode");
         complexnode.addObject(complexnode,"recursion");
-        WMPanel wmp = new WMPanel(new WMNode("Root","[S1]",0),new SoarEngine("rules/soar-rules.soar",false),true);
+        WMPanel wmp = new WMPanel(new WMNode("Root","[S1]",0),new SoarEngine("src/main/resources/rules/soar-rules.soar",false),true);
         complexnode.addObject(wmp, "wmpanel");
         System.out.println("Finished creation of objects");
         System.out.println(complexnode.toStringFull());

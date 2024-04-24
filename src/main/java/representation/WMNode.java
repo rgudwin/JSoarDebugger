@@ -317,12 +317,13 @@ public class WMNode {
             Field[] fields = obj.getClass().getDeclaredFields();
             for (Field field : fields) {
                 String fname = field.getName();
-                if (!field.isAccessible()) field.setAccessible(true);
+                //if (!field.isAccessible()) field.setAccessible(true);
                 Object fo=null;
                 try {
                     fo = field.get(obj);
                 } catch (Exception e) {
-                    e.printStackTrace();} 
+                    //e.printStackTrace();
+                } 
                 if (fo != null && !already_exists(fo))
                    ao.addObject(fo,fullname+"."+fname);  
             }
