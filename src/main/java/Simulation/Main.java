@@ -29,12 +29,12 @@ public class Main
         SilenceLoggers();
         try
         {
-            NativeUtils.loadFileFromJar("/rules/soar-rules.soar");
+            NativeUtils.loadFileFromJar("/rules/mac.soar");
             //String soarRulesPath = "soar-rules.soar";
             //String soarRulesPath = "/home/rgudwin/Local/Cursos/IA941/SoarTutorial_9.6.0-Multiplatform_64bit/agents/mac/mac.soar";
             //String soarRulesPath = "/home/rgudwin/Local/Cursos/IA941/SoarTutorial_9.6.0-Multiplatform_64bit/agents/TankSoar/tutorial/mapping-bot.soar";
 
-            String soarRulesPath = "soar-rules.soar";
+            String soarRulesPath = "mac.soar";
             //Start enviroment data
             //Environment e = new Environment(Boolean.FALSE);
             //SoarBridge soarBridge = new SoarEngine(soarRulesPath,true);

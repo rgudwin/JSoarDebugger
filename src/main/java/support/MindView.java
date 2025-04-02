@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -32,9 +30,9 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  *
  * @author gudwin
  */
-public class MindView extends javax.swing.JFrame implements Observer {
+public class MindView extends javax.swing.JFrame {
     
-    final String version = "v0.1";
+    final String version = "v0.3";
     int debugstate = 1;
     public SoarEngine sb;
     ImageIcon pause_icon = new ImageIcon(getClass().getResource("/images/pause-icon.png")); 
@@ -741,9 +739,9 @@ public class MindView extends javax.swing.JFrame implements Observer {
         }
     }
     
-    public void update(Observable arg0, Object arg1) {
-        this.repaint();
-    }
+//    public void update(Observable arg0, Object arg1) {
+//        this.repaint();
+//    }
     
     public void step() {
         try {
