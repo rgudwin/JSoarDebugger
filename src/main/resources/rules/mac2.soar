@@ -1,0 +1,370 @@
+### ABSTRACT.
+### This file provides a Soar system to solve the missionaries and
+### cannibals problem.
+###
+### REFACTORED VERSION
+### Operators always carry both ^missionaries and ^cannibals (possibly 0),
+### allowing plan-construction to be a single rule.
+### apply*move-boat and monitor*move-boat are guarded against zero values.
+###
+
+learn --off
+
+###
+### STATE SUCCESS/GOAL DETECTION
+###
+
+sp {mac*detect*state*success
+   (state <s> ^desired <d>
+              ^<side> <ls>)
+   (<ls> ^missionaries <m>
+         ^cannibals <c>)
+   (<d> ^{ << right-bank left-bank >> <side> } <dls>)
+   (<dls> ^missionaries <m>
+          ^cannibals <c>)
+-->
+   (write (crlf) |The problem has been solved.|)
+   (halt)}
+
+###
+### PLAN MOUNTING
+###
+
+sp {plan-build
+	(state <s> ^io.output-link <OL>
+			 -^plan <P>)
+-->
+	(<OL> ^plan <P>)
+	(<P> ^step 0)
+}
+
+### Single plan-construction rule, possible because all operators
+### always carry both ^missionaries and ^cannibals (possibly 0).
+
+sp {plan-construction
+	(state <s> ^io.output-link <OL>
+			 ^operator <OP>
+			 ^{ << left-bank right-bank >> <BB> } <BANK>)
+	(<OL> ^plan <P>)
+	(<OP> ^name <ON>
+		 ^missionaries <NM>
+		 ^cannibals <NC>
+		 ^bank <BANK>)
+	(<P> ^step <V>)
+-->
+	(<P> ^<V> <K>)
+	(<K> ^<ON> <T>)
+	(<T> ^missionaries <NM>)
+	(<T> ^cannibals <NC>)
+	(<T> ^bank <BB>)
+	(<P> ^step <V> -
+	           (+ <V> 1))
+}
+
+###
+### STATE FAILURE DETECTION
+###
+
+sp {mac*evaluate*state*failure*more*cannibals
+   (state <s> ^desired <d>
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^missionaries { <n> > 0 }
+           ^cannibals > <n>)
+-->
+   (write (crlf) |Failure State.|)
+   (<s> ^failure <d>)}
+
+###
+### move-BOAT MONITOR OPERATOR AND STATE
+###
+
+### Monitor missionaries only if > 0
+
+sp {monitor*move-boat*missionaries
+   (state <s> ^operator <o>)
+   (<o> ^name move-boat
+        ^missionaries { <number> > 0 })
+-->
+   (write (crlf) | Move | <number> | missionaries|)}
+
+### Monitor cannibals only if > 0
+
+sp {monitor*move-boat*cannibals
+   (state <s> ^operator <o>)
+   (<o> ^name move-boat
+        ^cannibals { <number> > 0 })
+-->
+   (write (crlf) | Move | <number> | cannibals|)}
+
+sp {monitor*state*left
+   (state <s> ^name mac
+              ^left-bank <l>
+              ^right-bank <r>)
+   (<l> ^missionaries <ml>
+        ^cannibals <cl>
+        ^boat 1)
+   (<r> ^missionaries <mr>
+        ^cannibals <cr>
+        ^boat 0)
+-->
+   (write (crlf) | M: | <ml> |, C: | <cl> | B ~~~   |
+                 | M: | <mr> |, C: | <cr> |  |)}
+
+sp {monitor*state*right
+   (state <s> ^name mac
+              ^left-bank <l>
+              ^right-bank <r>)
+   (<l> ^missionaries <ml>
+        ^cannibals <cl>
+        ^boat 0)
+   (<r> ^missionaries <mr>
+        ^cannibals <cr>
+        ^boat 1)
+-->
+   (write (crlf) | M: | <ml> |, C: | <cl> |   ~~~ B|
+                 | M: | <mr> |, C: | <cr> |  |)}
+
+###
+### SEARCH CONTROL - prefer/avoid last operator
+###
+
+sp {mac*select*operator*prefer*inverse*failure*types*1
+   (state <s> ^name mac
+              ^operator <o> +
+              ^failure <d>
+              ^last-operator <lo>)
+   (<o> ^name move-boat
+        ^<type> <number>
+        ^types 1)
+   (<lo> ^types 1
+         ^type <type>
+         ^number <number>)
+-->
+   (<s> ^operator <o> >)}
+
+sp {mac*select*operator*prefer*inverse*failure*types*2
+   (state <s> ^name mac
+              ^operator <o> +
+              ^failure <d>
+              ^last-operator.types 2)
+   (<o> ^types 2)
+-->
+   (<s> ^operator <o> >)}
+
+sp {mac*select*operator*avoid*inverse*not*failure*1
+   (state <s> ^name mac
+              ^operator <o> +
+             -^failure <d>
+              ^last-operator <lo>)
+   (<o> ^types 1
+        ^<type> <number>)
+   (<lo> ^types 1
+         ^type <type>
+         ^number <number>)
+-->
+   (<s> ^operator <o> < )}
+
+sp {mac*select*operator*avoid*inverse*not*failure*2
+   (state <s> ^name mac
+              ^operator <o> +
+             -^failure <d>
+              ^last-operator.types 2)
+   (<o> ^types 2)
+-->
+   (<s> ^operator <o> < )}
+
+###
+### INITIALIZATION
+###
+
+sp {mac*propose*initialize
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name initialize-mac)
+}
+
+sp {mac*apply*initialize
+   (state <s> ^operator.name initialize-mac)
+-->
+   (<s> ^name mac
+        ^left-bank <l>
+        ^right-bank <r>
+        ^desired <d>)
+   (<l> ^missionaries 3
+        ^cannibals 3
+        ^boat 1
+        ^other-bank <r>)
+   (<r> ^missionaries 0
+        ^cannibals 0
+        ^boat 0
+        ^other-bank <l>)
+   (<d> ^right-bank <dl>)
+   (<dl> ^missionaries 3
+         ^cannibals 3
+         ^boat 1)
+}
+
+###
+### OPERATOR PROPOSALS
+### All operators now always carry both ^missionaries and ^cannibals.
+### Values of 0 indicate that entity type is not being moved.
+###
+
+sp {mac*propose*operator*move-boat1-missionaries
+   "Moves a single missionary."
+   (state <s> ^name mac
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^missionaries > 0
+           ^boat 1)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^missionaries 1
+        ^cannibals 0
+        ^boat 1
+        ^types 1)}
+
+sp {mac*propose*operator*move-boat1-cannibals
+   "Moves a single cannibal."
+   (state <s> ^name mac
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^cannibals > 0
+           ^boat 1)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^missionaries 0
+        ^cannibals 1
+        ^boat 1
+        ^types 1)}
+
+sp {mac*propose*operator*move-boat2-missionaries
+   "Moves two missionaries."
+   (state <s> ^name mac
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^missionaries > 1
+           ^boat 1)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^missionaries 2
+        ^cannibals 0
+        ^boat 1
+        ^types 1)}
+
+sp {mac*propose*operator*move-boat2-cannibals
+   "Moves two cannibals."
+   (state <s> ^name mac
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^cannibals > 1
+           ^boat 1)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^missionaries 0
+        ^cannibals 2
+        ^boat 1
+        ^types 1)}
+
+sp {mac*propose*operator*move-boat11
+   "Moves one missionary and one cannibal."
+   (state <s> ^name mac
+              ^<< right-bank left-bank >> <bank>)
+   (<bank> ^missionaries > 0
+           ^cannibals > 0
+           ^boat 1)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^missionaries 1
+        ^cannibals 1
+        ^boat 1
+        ^types 2)}
+
+###
+### move-boat OPERATOR IMPLEMENTATION
+###
+### apply*move-boat now iterates over missionaries, cannibals, and boat
+### separately, guarding against zero to avoid spurious WME updates.
+###
+
+sp {apply*move-boat*missionaries
+   (state <s> ^operator <o>)
+   (<o> ^name move-boat
+        ^missionaries { <num> > 0 }
+        ^bank <bank>)
+   (<bank> ^missionaries <bank-num>
+           ^other-bank <obank>)
+   (<obank> ^missionaries <obank-num>)
+-->
+   (<bank>  ^missionaries <bank-num>  - (- <bank-num>  <num>))
+   (<obank> ^missionaries <obank-num> - (+ <obank-num> <num>))}
+
+sp {apply*move-boat*cannibals
+   (state <s> ^operator <o>)
+   (<o> ^name move-boat
+        ^cannibals { <num> > 0 }
+        ^bank <bank>)
+   (<bank> ^cannibals <bank-num>
+           ^other-bank <obank>)
+   (<obank> ^cannibals <obank-num>)
+-->
+   (<bank>  ^cannibals <bank-num>  - (- <bank-num>  <num>))
+   (<obank> ^cannibals <obank-num> - (+ <obank-num> <num>))}
+
+sp {apply*move-boat*boat
+   (state <s> ^operator <o>)
+   (<o> ^name move-boat
+        ^boat <num>
+        ^bank <bank>)
+   (<bank> ^boat <bank-num>
+           ^other-bank <obank>)
+   (<obank> ^boat <obank-num>)
+-->
+   (<bank>  ^boat <bank-num>  - (- <bank-num>  <num>))
+   (<obank> ^boat <obank-num> - (+ <obank-num> <num>))}
+
+###
+### SEARCH CONTROL - record last operator
+###
+
+sp {mac*apply*move-boat*record*last-operator*types*1
+   (state <s> ^name mac
+              ^operator <o>)
+   (<o> ^name move-boat
+        ^bank <bank>
+        ^{ << missionaries cannibals >> <type> } { <n> > 0 }
+        ^types 1)
+-->
+   (<s> ^last-operator <o1>)
+   (<o1> ^types 1
+         ^bank <bank>
+         ^type <type>
+         ^number <n>)}
+
+sp {mac*apply*move-boat*record*last-operator*types*2
+   (state <s> ^name mac
+              ^operator <o>)
+   (<o> ^name move-boat
+        ^boat <bank>
+        ^types 2)
+-->
+   (<s> ^last-operator <o1>)
+   (<o1> ^types 2
+         ^bank <bank>)}
+
+sp {mac*apply*move-boat*remove*old*last-operator
+   (state <s> ^name mac
+              ^operator <o>
+              ^<lr-bank>.other-bank <o-bank>
+              ^last-operator <lo>)
+   (<lo> ^bank <obank>)
+-->
+   (<s> ^last-operator <lo> -)}
