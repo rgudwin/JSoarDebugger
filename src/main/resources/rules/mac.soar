@@ -73,7 +73,7 @@ sp {mac*evaluate*state*failure*more*cannibals
    (<bank> ^missionaries { <n> > 0 }
            ^cannibals > <n>)
 -->
-   (write (crlf) |Failure State.|)
+   (write |-> (**) Failure State.|)
    (<s> ^failure <bank>)}
 
 ###
@@ -85,14 +85,14 @@ sp {monitor*move-missionaries
    (<o> ^name move-missionaries
         ^missionaries <n>)
 -->
-   (write (crlf) | Move | <n> | missionaries|)}
+   (write | - Move | <n> | missionaries|)}
 
 sp {monitor*move-cannibals
    (state <s> ^operator <o>)
    (<o> ^name move-cannibals
         ^cannibals <n>)
 -->
-   (write (crlf) | Move | <n> | cannibals|)}
+   (write | - Move | <n> | cannibals|)}
 
 sp {monitor*move-both
    (state <s> ^operator <o>)
@@ -100,7 +100,7 @@ sp {monitor*move-both
         ^missionaries <nm>
         ^cannibals <nc>)
 -->
-   (write (crlf) | Move | <nm> | missionaries and | <nc> | cannibals|)}
+   (write | - Move | <nm> | missionaries and | <nc> | cannibals|)}
 
 sp {monitor*state*left
    (state <s> ^name mac
@@ -113,7 +113,7 @@ sp {monitor*state*left
         ^cannibals <cr>
         ^boat 0)
 -->
-   (write (crlf) | M: | <ml> |, C: | <cl> | B ~~~   |
+   (write (crlf) |       M: | <ml> |, C: | <cl> | B ~~~   |
                  | M: | <mr> |, C: | <cr> |  |)}
 
 sp {monitor*state*right
@@ -127,7 +127,7 @@ sp {monitor*state*right
         ^cannibals <cr>
         ^boat 1)
 -->
-   (write (crlf) | M: | <ml> |, C: | <cl> |   ~~~ B|
+   (write (crlf) |       M: | <ml> |, C: | <cl> |   ~~~ B|
                  | M: | <mr> |, C: | <cr> |  |)}
 
 ###
