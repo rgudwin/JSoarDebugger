@@ -185,7 +185,7 @@ public class SoarEngine
      * @return A List of SOAR Commands
      */
     private void processOutputLink() 
-    {System.out.println("Processing output link");   
+    {System.out.println("\nProcessing output link");   
     }
     
     /**

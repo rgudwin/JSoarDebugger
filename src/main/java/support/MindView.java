@@ -882,7 +882,7 @@ public class MindView extends javax.swing.JFrame {
         String text;
         text = sb.stringOutputLink();
         output_link.setText(text);
-        System.out.println(sb.reasonForStop());
+        //System.out.println("...."+sb.reasonForStop());
         WMNode decision = sb.getOutputLink();
         //System.out.println(decision.toStringFull());
         olpanel.setRoot(decision);
