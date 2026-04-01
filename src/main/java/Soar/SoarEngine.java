@@ -58,6 +58,7 @@ public class SoarEngine
         {
             ThreadedAgent tag = ThreadedAgent.create();
             agent = tag.getAgent();
+            agent.getPrinter().addPersistentWriter(new java.io.PrintWriter(System.out, true));
             SoarCommands.source(agent.getInterpreter(), path);
             inputLink = agent.getInputOutput().getInputLink();
 
