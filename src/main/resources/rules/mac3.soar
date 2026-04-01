@@ -370,7 +370,7 @@ sp {mac*select*prefer*inverse*failure*cannibals
               ^failure <d>
               ^last-operator <lo>)
    (<lo> ^name move-cannibals
-         ^missionaries <n>
+         ^cannibals <n>
          ^bank <other-bank>)
    (<o> ^name move-cannibals
         ^cannibals <n>
