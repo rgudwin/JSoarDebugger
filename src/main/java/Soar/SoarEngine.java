@@ -41,7 +41,7 @@ public class SoarEngine
 
     public String input_link_string = "";
     public String output_link_string = "";
-    public int phase=0;
+    public int phase=-1;
     public WMNode outputLink;
     public WMNode il = new WMNode("InputLink");
     static List<Identifier> listtoavoidloops = new ArrayList<>();
@@ -195,16 +195,18 @@ public class SoarEngine
     public void step() 
     {
         if (phase != -1) finish_msteps();
-        resetSimulation();
-        prepareInputLink();
-        input_link_string = stringInputLink();
-        //printInputWMEs();
-        runSOAR();
-        output_link_string = stringOutputLink();
-        //printOutputWMEs();
-        processOutputLink();
-        //processCommands(commandList);
-        //resetSimulation();
+        else {
+            resetSimulation();
+            prepareInputLink();
+            input_link_string = stringInputLink();
+            //printInputWMEs();
+            runSOAR();
+            output_link_string = stringOutputLink();
+            //printOutputWMEs();
+            processOutputLink();
+            //processCommands(commandList);
+            //resetSimulation();
+        }
     }
     
     
