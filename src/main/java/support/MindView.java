@@ -32,7 +32,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 public class MindView extends javax.swing.JFrame {
     
-    final String version = "v0.0.8";
+    final String version = "v0.0.9";
     int debugstate = 1;
     public SoarEngine sb;
     ImageIcon pause_icon = new ImageIcon(getClass().getResource("/images/pause-icon.png")); 
@@ -645,6 +645,9 @@ public class MindView extends javax.swing.JFrame {
             sb.prepareInputLink();
             wmpanel.updateTree();
             setPhaseIndication();
+            // These lines load the rules also on the editor
+            String rules = loadRules(rulesPath);
+            editor.setText(rules);
         } else {
             System.out.println("Open command cancelled by user.");
         }
