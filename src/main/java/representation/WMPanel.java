@@ -45,7 +45,7 @@ public class WMPanel extends javax.swing.JPanel {
     SoarEngine sb = null;
     WMTreeNode rootlink;
     boolean editable;
-    String path=null;
+    String path=".";
     //MindView mv;
 
     public WMPanel(WMNode rootId, SoarEngine sb, boolean editable) {

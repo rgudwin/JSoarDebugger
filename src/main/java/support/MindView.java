@@ -32,7 +32,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  */
 public class MindView extends javax.swing.JFrame {
     
-    final String version = "v0.0.4";
+    final String version = "v0.0.8";
     int debugstate = 1;
     public SoarEngine sb;
     ImageIcon pause_icon = new ImageIcon(getClass().getResource("/images/pause-icon.png")); 
